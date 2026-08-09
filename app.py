@@ -789,7 +789,7 @@ with st.sidebar:
                 unsafe_allow_html=True)
     st.markdown('<div class="label" style="margin-bottom:8px;">WORKSPACE</div>', unsafe_allow_html=True)
 
-    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Plan"),
+    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Goals"),
                  ("Explore", "🔎", "Explore"), ("Expenses", "💳", "Expenses")]
     for label, icon, target in nav_items:
         if st.button(f"{icon}  {label}", key=f"nav_{label}", use_container_width=True):
@@ -833,7 +833,7 @@ with st.sidebar:
 top_cols = st.columns([2.2, 1, 1, 1, 1, 1.8])
 with top_cols[0]:
     st.markdown('<div class="logo"><div class="logo-icon">📈</div> penny</div>', unsafe_allow_html=True)
-tabs = ["Dashboard", "Plan", "Explore", "Expenses"]
+tabs = ["Dashboard", "Goals", "Explore", "Expenses"]
 for i, t in enumerate(tabs):
     with top_cols[i + 1]:
         if st.button(t, key=f"top_{t}", use_container_width=True,
