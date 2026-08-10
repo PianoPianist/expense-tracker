@@ -15,8 +15,11 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-st.set_page_config(page_title="penny", page_icon="static/favicon.png", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="penny", page_icon="💰", layout="wide", initial_sidebar_state="expanded")
 
+# ============================================================================
+# THEME / CSS — high contrast
+# ============================================================================
 ORANGE = "#FF5A1F"
 NAVY = "#12172B"
 CREAM = "#F4EFE8"
@@ -135,7 +138,7 @@ section[data-testid="stSidebar"],
 section[data-testid="stSidebar"] > div {{
     background:#FFFFFF !important;
 }}
-section[data-testid="stSidebar"] * {{ color:#787878 !important; }}
+section[data-testid="stSidebar"] * {{ color:{NAVY} !important; }}
 section[data-testid="stSidebar"] .sub {{ color:{MUTED} !important; }}
 section[data-testid="stSidebar"] .card-dark * {{ color:#FFFFFF !important; }}
 
@@ -205,11 +208,15 @@ div[data-baseweb="menu"] * {{ color:{NAVY} !important; }}
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STUDENT_CSV = os.path.join(BASE_DIR, "student.csv")
 TRANSACTIONS_CSV = os.path.join(BASE_DIR, "transactions.csv")
+# Persistent user corrections.  Unlike session_state, this survives app restarts.
 FEEDBACK_CSV = os.path.join(BASE_DIR, "transaction_feedback.csv")
 LEARNED_CSV = os.path.join(BASE_DIR, "learned_rules.csv")
 GOALS_CSV = os.path.join(BASE_DIR, "goals.csv")
 USD_TO_INR = 90.0
 
+# ============================================================================
+# SCHEMA (mirrors budget_model.py / nlp_model.py)
+# ============================================================================
 EXPENSE_COLUMNS = ["tuition", "housing", "food", "transportation", "books_supplies",
                     "entertainment", "personal_care", "technology", "health_wellness", "miscellaneous"]
 FEATURE_COLUMNS = ["age", "gender", "year_in_school", "major", "monthly_income",
@@ -217,6 +224,7 @@ FEATURE_COLUMNS = ["age", "gender", "year_in_school", "major", "monthly_income",
 NUMERIC_COLUMNS = ["age", "monthly_income", "financial_aid"]
 CATEGORICAL_COLUMNS = ["gender", "year_in_school", "major", "preferred_payment_method"]
 
+# maps messy label variants in transactions.csv onto a clean category set
 CAT_ALIASES = {"eat": "food", "tv": "entertainment", "books": "education", "laptop": "technology"}
 
 CAT_COLORS = {
@@ -224,6 +232,7 @@ CAT_COLORS = {
     "education": "#F5A623", "emi": "#E4572E", "investment": "#2EC4B6", "healthcare": "#EF476F",
     "utilities": "#118AB2", "shopping": "#9B5DE5",
 }
+# peer-benchmark categories that exist in BOTH datasets (transaction category -> student.csv column)
 PEER_ALIAS = {"food": "food", "entertainment": "entertainment", "technology": "technology",
               "travel": "transportation", "healthcare": "health_wellness"}
 
@@ -232,11 +241,16 @@ def cat_color(cat):
     return CAT_COLORS.get(cat, MUTED)
 
 
+# ============================================================================
+# DATA LOADING
+# ============================================================================
 @st.cache_data
 def load_student_df():
     df = pd.read_csv(STUDENT_CSV)
     if "Unnamed: 0" in df.columns:
         df = df.drop(columns=["Unnamed: 0"])
+    # Dataset monetary values are in USD. Convert them to INR before any
+    # training or analytics so every displayed/modelled amount is in rupees.
     money_cols = [c for c in EXPENSE_COLUMNS + ["monthly_income", "financial_aid"] if c in df.columns]
     for col in money_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0) * USD_TO_INR
@@ -273,9 +287,11 @@ def load_transactions_df():
         df["category"].astype(str).str.lower().str.strip().replace(CAT_ALIASES)
     )
     df = df[df["transaction_text"].ne("") & df["category"].ne("")]
+    # If the transaction dataset contains a monetary amount, it is also USD.
     for amount_col in ["amount", "price", "cost"]:
         if amount_col in df.columns:
             df[amount_col] = pd.to_numeric(df[amount_col], errors="coerce").fillna(0) * USD_TO_INR
+    # Keep the latest label for an identical description, so a correction wins.
     df = df.drop_duplicates(subset=["transaction_text"], keep="last")
     return df.reset_index(drop=True)
 
@@ -292,6 +308,7 @@ def save_feedback(transaction_text, category):
         "category": category,
     }])
 
+    # Dedicated rule memory: latest correction for a phrase always wins.
     if os.path.exists(LEARNED_CSV):
         try:
             old = pd.read_csv(LEARNED_CSV)
@@ -302,6 +319,7 @@ def save_feedback(transaction_text, category):
     row = row.drop_duplicates(subset=["transaction_text"], keep="last")
     row.to_csv(LEARNED_CSV, index=False)
 
+    # Also add it to the general training feedback dataset.
     train_row = row.tail(1).copy()
     if os.path.exists(FEEDBACK_CSV):
         try:
@@ -315,6 +333,24 @@ def save_feedback(transaction_text, category):
     load_transactions_df.clear()
 
 
+
+
+# ============================================================================
+# BUDGET MODEL
+# ============================================================================
+# The original model summed every expense column and called that a "monthly"
+# budget. That mixes large/irregular academic purchases with recurring living
+# costs and can produce absurd monthly numbers.
+#
+# Penny now learns a MONTHLY LIVING COST target using recurring categories only.
+# Tuition, books/supplies and technology are deliberately excluded because the
+# dataset does not establish that those fields are monthly recurring costs.
+#
+# We also apply an affordability guardrail after prediction: a recommended
+# monthly budget cannot exceed 85% of monthly income. This is a budgeting rule,
+# not a fake ML prediction, and prevents the app from recommending spending
+# above the user's available monthly income.
+# ============================================================================
 MONTHLY_LIVING_COLUMNS = [
     "housing",
     "food",
@@ -371,6 +407,8 @@ def predict_budget(pipe, profile: dict) -> float:
     row = pd.DataFrame([profile])[FEATURE_COLUMNS]
     raw_prediction = max(float(pipe.predict(row)[0]), 0.0)
 
+    # Affordability guardrail: the recommended monthly spending plan should
+    # leave at least 15% of monthly income unspent for savings/buffer.
     monthly_income = max(float(profile.get("monthly_income", 0)), 0.0)
     max_affordable_budget = monthly_income * 0.85
 
@@ -380,12 +418,24 @@ def predict_budget(pipe, profile: dict) -> float:
     return raw_prediction
 
 
+# ============================================================================
+# NLP EXPENSE CLASSIFIER (TF-IDF + MultinomialNB, same as nlp_model.py)
+# kept in session_state (not cache_resource) so it can be re-trained live
+# whenever the user corrects a prediction ("teach the model").
+# ============================================================================
 def normalize_text(text):
     """Normalize descriptions so learned examples can be reused reliably."""
     return " ".join(str(text).lower().strip().split())
 
 
 def fit_nlp(df):
+    """
+    Train the expense classifier and attach a persistent memory of labeled examples.
+
+    The ML model handles unseen descriptions, while the learned-example memory
+    guarantees that a user correction is respected on the exact same description
+    and on simple variants such as ``iPhone`` -> ``iPhone 15``.
+    """
     df = df.copy()
     df["transaction_text"] = df["transaction_text"].map(normalize_text)
     df["category"] = df["category"].astype(str).str.lower().str.strip()
@@ -412,6 +462,8 @@ def fit_nlp(df):
     ])
     pipe.fit(df["transaction_text"], df["category"])
 
+    # Keep the most recent label for each description.  This is the important
+    # part that makes the "teach model" action actually stick.
     memory = {}
     for text, category in zip(df["transaction_text"], df["category"]):
         memory[normalize_text(text)] = category
@@ -537,6 +589,10 @@ def generate_recommendations(profile, user_expenses, predicted_budget):
     return recs
 
 
+
+# ============================================================================
+# GOALS — persistent goal Goalsning + AI goal-management helpers
+# ============================================================================
 GOAL_COLUMNS = ["id", "name", "target_amount", "saved_amount", "deadline", "priority"]
 
 
@@ -643,7 +699,7 @@ def goal_ai_advice(goal, expenses, profile, predicted_budget):
 
 def goal_summary(goals, expenses, profile, predicted_budget):
     if not len(goals):
-        return "Create your first goal and Penny will build a savings Goals around your real spending."
+        return "Create your first goal and Penny will build a savings plan around your real spending."
 
     active = goals.copy()
     active["remaining"] = (active["target_amount"] - active["saved_amount"]).clip(lower=0)
@@ -714,11 +770,11 @@ def bar_row(label, amount_display, pct, color):
     </div>""", unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown(f"""<div class="logo" style="margin-bottom:20px;"><img src="app/static/logo.png" style="width: 15vw"></div>""",
+    st.markdown(f"""<div class="logo" style="margin-bottom:20px;"><div class="logo-icon">📈</div> penny</div>""",
                 unsafe_allow_html=True)
     st.markdown('<div class="label" style="margin-bottom:8px;">WORKSPACE</div>', unsafe_allow_html=True)
 
-    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Goals"),
+    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Plan"),
                  ("Explore", "🔎", "Explore"), ("Expenses", "💳", "Expenses")]
     for label, icon, target in nav_items:
         if st.button(f"{icon}  {label}", key=f"nav_{label}", use_container_width=True):
@@ -758,8 +814,8 @@ with st.sidebar:
 
 top_cols = st.columns([2.2, 1, 1, 1, 1, 1.8])
 with top_cols[0]:
-    st.markdown('<div class="logo"><div class="logo-icon"><img src="app/static/logo.png" style="width:105px"></div></div>', unsafe_allow_html=True)
-tabs = ["Dashboard", "Goals", "Explore", "Expenses"]
+    st.markdown('<div class="logo"><div class="logo-icon">📈</div> penny</div>', unsafe_allow_html=True)
+tabs = ["Dashboard", "Plan", "Explore", "Expenses"]
 for i, t in enumerate(tabs):
     with top_cols[i + 1]:
         if st.button(t, key=f"top_{t}", use_container_width=True,
@@ -847,7 +903,7 @@ def render_dashboard():
         st.markdown(f"""
         <div class="banner">
             <div>
-                <div style="color:{ORANGE}; font-weight:700; font-size:12px; letter-spacing:.05em;">FROM YOUR Goals</div>
+                <div style="color:{ORANGE}; font-weight:700; font-size:12px; letter-spacing:.05em;">FROM YOUR PLAN</div>
                 <div style="font-size:24px; font-weight:800; color:{NAVY}; margin:6px 0;">{top_icon} {top_text}</div>
                 <div class="sub" style="max-width:600px;">See the Explore tab for a full breakdown of peer comparisons, anomalies and savings tips.</div>
             </div>
@@ -859,10 +915,13 @@ def render_dashboard():
             st.rerun()
 
 
+# ============================================================================
+# Goals — add expense, auto-classified by the NLP model
+# ============================================================================
 def render_Goals():
     st.markdown("<h1 style='margin-bottom:0;'>Goals</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<div class='sub' style='font-size:15px;'>Set savings goals and let AI build a realistic Goals around your actual spending.</div>",
+        "<div class='sub' style='font-size:15px;'>Set savings goals and let AI build a realistic plan around your actual spending.</div>",
         unsafe_allow_html=True,
     )
     st.markdown("<br>", unsafe_allow_html=True)
@@ -955,7 +1014,7 @@ def render_Goals():
                 advice, _ = goal_ai_advice(
                     goal, exp, st.session_state.profile, predicted_budget
                 )
-                st.markdown("<div style='margin-top:14px;'><b>🤖 AI Goals</b></div>", unsafe_allow_html=True)
+                st.markdown("<div style='margin-top:14px;'><b>🤖 AI plan</b></div>", unsafe_allow_html=True)
                 for tip in advice:
                     st.markdown(f'<div class="rec-card">{tip}</div>', unsafe_allow_html=True)
 
@@ -1251,8 +1310,8 @@ def render_expenses():
 
 if st.session_state.tab == "Dashboard":
     render_dashboard()
-elif st.session_state.tab == "Goals":
-    render_Goals()
+elif st.session_state.tab == "Plan":
+    render_plan()
 elif st.session_state.tab == "Explore":
     render_explore()
 elif st.session_state.tab == "Expenses":
