@@ -15,7 +15,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-st.set_page_config(page_title="penny", page_icon="💰", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="penny", page_icon="static/favicon.png", layout="wide", initial_sidebar_state="expanded")
 
 # ============================================================================
 # THEME / CSS — high contrast
@@ -138,7 +138,7 @@ section[data-testid="stSidebar"],
 section[data-testid="stSidebar"] > div {{
     background:#FFFFFF !important;
 }}
-section[data-testid="stSidebar"] * {{ color:{NAVY} !important; }}
+section[data-testid="stSidebar"] * {{ color:#787878 !important; }}
 section[data-testid="stSidebar"] .sub {{ color:{MUTED} !important; }}
 section[data-testid="stSidebar"] .card-dark * {{ color:#FFFFFF !important; }}
 
@@ -785,7 +785,7 @@ def bar_row(label, amount_display, pct, color):
 # SIDEBAR — real editable profile that drives the model
 # ============================================================================
 with st.sidebar:
-    st.markdown(f"""<div class="logo" style="margin-bottom:20px;"><div class="logo-icon">📈</div> penny</div>""",
+    st.markdown(f"""<div class="logo" style="margin-bottom:20px;"><img src="app/static/logo.png" style="width: 15vw"></div>""",
                 unsafe_allow_html=True)
     st.markdown('<div class="label" style="margin-bottom:8px;">WORKSPACE</div>', unsafe_allow_html=True)
 
@@ -832,7 +832,7 @@ with st.sidebar:
 # ============================================================================
 top_cols = st.columns([2.2, 1, 1, 1, 1, 1.8])
 with top_cols[0]:
-    st.markdown('<div class="logo"><div class="logo-icon">📈</div> penny</div>', unsafe_allow_html=True)
+    st.markdown('<div class="logo"><div class="logo-icon"><img src="app/static/logo.png" style="width:105px"></div></div>', unsafe_allow_html=True)
 tabs = ["Dashboard", "Plan", "Explore", "Expenses"]
 for i, t in enumerate(tabs):
     with top_cols[i + 1]:
