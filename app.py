@@ -416,7 +416,6 @@ def fit_nlp(df):
     for text, category in zip(df["transaction_text"], df["category"]):
         memory[normalize_text(text)] = category
 
-    # Dedicated persistent rules have the final say.
     if os.path.exists(LEARNED_CSV):
         try:
             learned = pd.read_csv(LEARNED_CSV).dropna(subset=["transaction_text", "category"])
@@ -434,13 +433,10 @@ def predict_category(pipe, text):
     if not text:
         return "miscellaneous", 0.0
 
-    # Persistent learned rules are checked FIRST. This makes a user correction
-    # deterministic instead of allowing the statistical model to override it.
     rules = getattr(pipe, "_learned_memory", {})
     if text in rules:
         return rules[text], 1.0
 
-    # Also recognize a learned phrase inside a longer description.
     text_tokens = set(text.split())
     matches = []
     for learned_text, category in rules.items():
@@ -456,9 +452,6 @@ def predict_category(pipe, text):
     return pipe.classes_[idx], float(proba[idx])
 
 
-# ============================================================================
-# ANALYTICS + RECOMMENDATIONS  (data-returning versions of analytics.py / recommendations.py)
-# ============================================================================
 def peer_comparison(student_df, profile, user_expenses):
     peer_data = student_df[
         (student_df["major"] == profile["major"]) &
@@ -544,10 +537,6 @@ def generate_recommendations(profile, user_expenses, predicted_budget):
     return recs
 
 
-
-# ============================================================================
-# GOALS — persistent goal Goalsning + AI goal-management helpers
-# ============================================================================
 GOAL_COLUMNS = ["id", "name", "target_amount", "saved_amount", "deadline", "priority"]
 
 
@@ -679,10 +668,6 @@ def goal_summary(goals, expenses, profile, predicted_budget):
         f"You need to free up roughly ₹{shortfall:,.0f}/month or adjust a goal deadline."
     )
 
-
-# ============================================================================
-# SESSION STATE
-# ============================================================================
 student_df = load_student_df()
 
 if "profile" not in st.session_state:
@@ -728,10 +713,6 @@ def bar_row(label, amount_display, pct, color):
       <div class="barbg"><div class="barfg" style="width:{pct}%; background:{color};"></div></div>
     </div>""", unsafe_allow_html=True)
 
-
-# ============================================================================
-# SIDEBAR — real editable profile that drives the model
-# ============================================================================
 with st.sidebar:
     st.markdown(f"""<div class="logo" style="margin-bottom:20px;"><img src="app/static/logo.png" style="width: 15vw"></div>""",
                 unsafe_allow_html=True)
@@ -775,9 +756,6 @@ with st.sidebar:
         <div class="sub" style="color:#AAB0C0;">RandomForest · monthly living budget · USD → INR at ₹90/$</div>
     </div>""", unsafe_allow_html=True)
 
-# ============================================================================
-# TOP BAR
-# ============================================================================
 top_cols = st.columns([2.2, 1, 1, 1, 1, 1.8])
 with top_cols[0]:
     st.markdown('<div class="logo"><div class="logo-icon"><img src="app/static/logo.png" style="width:105px"></div></div>', unsafe_allow_html=True)
@@ -792,10 +770,6 @@ with top_cols[5]:
     st.text_input("Search", placeholder="🔍 Search", label_visibility="collapsed")
 st.markdown("<div style='margin-bottom:18px;'></div>", unsafe_allow_html=True)
 
-
-# ============================================================================
-# DASHBOARD
-# ============================================================================
 def render_dashboard():
     st.title("Overview")
     st.markdown("<div class='sub' style='font-size:15px;'>A clear view of your actual spending, realistic monthly budget and progress toward your goals.</div>",
@@ -885,9 +859,6 @@ def render_dashboard():
             st.rerun()
 
 
-# ============================================================================
-# Goals — add expense, auto-classified by the NLP model
-# ============================================================================
 def render_Goals():
     st.markdown("<h1 style='margin-bottom:0;'>Goals</h1>", unsafe_allow_html=True)
     st.markdown(
@@ -899,7 +870,6 @@ def render_Goals():
     goals = st.session_state.goals
     exp = st.session_state.expenses
 
-    # Goal creation
     c1, c2 = st.columns([1.25, 1])
     with c1:
         st.markdown("<h3 style='margin-bottom:0;'>Create a goal</h3>", unsafe_allow_html=True)
@@ -949,7 +919,6 @@ def render_Goals():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Goal cards
     if len(goals):
         st.markdown("<h3>Your goals</h3>", unsafe_allow_html=True)
 
@@ -1061,10 +1030,6 @@ def render_Goals():
             unsafe_allow_html=True,
         )
 
-
-# ============================================================================
-# EXPLORE — peer comparison, anomalies, savings tips, goal tracker, recs
-# ============================================================================
 def render_explore():
     st.title("Explore")
     st.markdown("<div class='sub' style='font-size:15px; margin-bottom:18px;'>Insights computed from your profile, peers and logged expenses.</div>",
@@ -1131,10 +1096,6 @@ def render_explore():
     for icon, text in generate_recommendations(st.session_state.profile, exp, predicted_budget):
         st.markdown(f'<div class="rec-card">{icon} {text}</div>', unsafe_allow_html=True)
 
-
-# ============================================================================
-# EXPENSES — editable ledger + retrain classifier
-# ============================================================================
 def render_expenses():
     st.markdown("<h1 style='margin-bottom:0;'>Actual expenses</h1>", unsafe_allow_html=True)
     st.markdown(
@@ -1144,7 +1105,6 @@ def render_expenses():
         unsafe_allow_html=True,
     )
 
-    # Add actual expense
     st.markdown("<h3 style='margin-bottom:0;'>Add an actual expense</h3>", unsafe_allow_html=True)
     st.markdown(
         "<div class='sub' style='margin-bottom:16px;'>Describe the purchase and Penny will suggest a category.</div>",
@@ -1289,9 +1249,6 @@ def render_expenses():
             )
 
 
-# ============================================================================
-# ROUTER
-# ============================================================================
 if st.session_state.tab == "Dashboard":
     render_dashboard()
 elif st.session_state.tab == "Goals":
