@@ -407,7 +407,7 @@ def predict_budget(pipe, profile: dict) -> float:
     row = pd.DataFrame([profile])[FEATURE_COLUMNS]
     raw_prediction = max(float(pipe.predict(row)[0]), 0.0)
 
-    # Affordability guardrail: the recommended monthly spending plan should
+    # Affordability guardrail: the recommended monthly spending Goals should
     # leave at least 15% of monthly income unspent for savings/buffer.
     monthly_income = max(float(profile.get("monthly_income", 0)), 0.0)
     max_affordable_budget = monthly_income * 0.85
@@ -598,7 +598,7 @@ def generate_recommendations(profile, user_expenses, predicted_budget):
 
 
 # ============================================================================
-# GOALS — persistent goal planning + AI goal-management helpers
+# GOALS — persistent goal Goalsning + AI goal-management helpers
 # ============================================================================
 GOAL_COLUMNS = ["id", "name", "target_amount", "saved_amount", "deadline", "priority"]
 
@@ -706,7 +706,7 @@ def goal_ai_advice(goal, expenses, profile, predicted_budget):
 
 def goal_summary(goals, expenses, profile, predicted_budget):
     if not len(goals):
-        return "Create your first goal and Penny will build a savings plan around your real spending."
+        return "Create your first goal and Penny will build a savings Goals around your real spending."
 
     active = goals.copy()
     active["remaining"] = (active["target_amount"] - active["saved_amount"]).clip(lower=0)
@@ -789,7 +789,7 @@ with st.sidebar:
                 unsafe_allow_html=True)
     st.markdown('<div class="label" style="margin-bottom:8px;">WORKSPACE</div>', unsafe_allow_html=True)
 
-    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Plan"),
+    nav_items = [("Overview", "🏠", "Dashboard"), ("Goals", "🎯", "Goals"),
                  ("Explore", "🔎", "Explore"), ("Expenses", "💳", "Expenses")]
     for label, icon, target in nav_items:
         if st.button(f"{icon}  {label}", key=f"nav_{label}", use_container_width=True):
@@ -833,7 +833,7 @@ with st.sidebar:
 top_cols = st.columns([2.2, 1, 1, 1, 1, 1.8])
 with top_cols[0]:
     st.markdown('<div class="logo"><div class="logo-icon"><img src="app/static/logo.png" style="width:105px"></div></div>', unsafe_allow_html=True)
-tabs = ["Dashboard", "Plan", "Explore", "Expenses"]
+tabs = ["Dashboard", "Goals", "Explore", "Expenses"]
 for i, t in enumerate(tabs):
     with top_cols[i + 1]:
         if st.button(t, key=f"top_{t}", use_container_width=True,
@@ -925,7 +925,7 @@ def render_dashboard():
         st.markdown(f"""
         <div class="banner">
             <div>
-                <div style="color:{ORANGE}; font-weight:700; font-size:12px; letter-spacing:.05em;">FROM YOUR PLAN</div>
+                <div style="color:{ORANGE}; font-weight:700; font-size:12px; letter-spacing:.05em;">FROM YOUR Goals</div>
                 <div style="font-size:24px; font-weight:800; color:{NAVY}; margin:6px 0;">{top_icon} {top_text}</div>
                 <div class="sub" style="max-width:600px;">See the Explore tab for a full breakdown of peer comparisons, anomalies and savings tips.</div>
             </div>
@@ -938,12 +938,12 @@ def render_dashboard():
 
 
 # ============================================================================
-# PLAN — add expense, auto-classified by the NLP model
+# Goals — add expense, auto-classified by the NLP model
 # ============================================================================
-def render_plan():
+def render_Goals():
     st.markdown("<h1 style='margin-bottom:0;'>Goals</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<div class='sub' style='font-size:15px;'>Set savings goals and let AI build a realistic plan around your actual spending.</div>",
+        "<div class='sub' style='font-size:15px;'>Set savings goals and let AI build a realistic Goals around your actual spending.</div>",
         unsafe_allow_html=True,
     )
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1038,7 +1038,7 @@ def render_plan():
                 advice, _ = goal_ai_advice(
                     goal, exp, st.session_state.profile, predicted_budget
                 )
-                st.markdown("<div style='margin-top:14px;'><b>🤖 AI plan</b></div>", unsafe_allow_html=True)
+                st.markdown("<div style='margin-top:14px;'><b>🤖 AI Goals</b></div>", unsafe_allow_html=True)
                 for tip in advice:
                     st.markdown(f'<div class="rec-card">{tip}</div>', unsafe_allow_html=True)
 
@@ -1346,8 +1346,8 @@ def render_expenses():
 # ============================================================================
 if st.session_state.tab == "Dashboard":
     render_dashboard()
-elif st.session_state.tab == "Plan":
-    render_plan()
+elif st.session_state.tab == "Goals":
+    render_Goals()
 elif st.session_state.tab == "Explore":
     render_explore()
 elif st.session_state.tab == "Expenses":
