@@ -918,7 +918,7 @@ def render_dashboard():
 # ============================================================================
 # Goals — add expense, auto-classified by the NLP model
 # ============================================================================
-def render_Goals():
+def render_plan():
     st.markdown("<h1 style='margin-bottom:0;'>Goals</h1>", unsafe_allow_html=True)
     st.markdown(
         "<div class='sub' style='font-size:15px;'>Set savings goals and let AI build a realistic plan around your actual spending.</div>",
