@@ -1,10 +1,15 @@
 {
-  "name": "i shit soggy rats",
-  "major": "Engineering",
-  "year_in_school": "Senior",
-  "age": 17,
-  "gender": "Female",
-  "monthly_income": 2.0,
-  "financial_aid": 3000.0,
-  "preferred_payment_method": "Credit/Debit Card"
+  "name": "shyamak seth",
+  "college": "Symbiosis International University",
+  "campus_city": "Pune",
+  "country": "IN",
+  "major": "Biology",
+  "year_in_school": "Freshman",
+  "tuition_amount": 200000,
+  "tuition_period": "annual",
+  "monthly_income": 45000,
+  "financial_aid": 15000,
+  "age": 19,
+  "gender": "Male",
+  "preferred_payment_method": "Mobile Payment App"
 }

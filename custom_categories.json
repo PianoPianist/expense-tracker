@@ -1,0 +1,48 @@
+[
+  {
+    "id": "fitness",
+    "name": "Fitness & Gym",
+    "color": "#059669",
+    "keywords": [
+      "gym",
+      "cultfit",
+      "gold gym",
+      "protein",
+      "whey",
+      "creatine",
+      "preworkout",
+      "dumbbells",
+      "yoga"
+    ]
+  },
+  {
+    "id": "gaming",
+    "name": "Gaming & Digital",
+    "color": "#8B5CF6",
+    "keywords": [
+      "steam",
+      "valorant",
+      "riot",
+      "discord",
+      "playstation",
+      "xbox",
+      "nintendo",
+      "epic games",
+      "twitch"
+    ]
+  },
+  {
+    "id": "side_hustle___freelance",
+    "name": "Side Hustle & Freelance",
+    "color": "#D97706",
+    "keywords": [
+      "domain",
+      "hosting",
+      "vercel",
+      "aws",
+      "freelance",
+      "upwork",
+      "fiverr"
+    ]
+  }
+]
