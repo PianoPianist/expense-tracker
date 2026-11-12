@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penny — Luminescent Modern + Orange Experiments</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS & SYSTEM VARIABLES
+       Luminescent Modern (Asset 09 Ivory Clinic & 13 Vaultiq) + Penny Vivid Orange
+       ========================================================================== */
+    :root {
+      --bg-base: #F8FAFC;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --bg-active: #EDF2F7;
+      
+      --border-subtle: #E2E8F0;
+      --border-strong: #CBD5E1;
+      --border-focus: #FF5A1F;
+      
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-dim: #94A3B8;
+      
+      /* Signature Penny Orange Palette */
+      --orange-primary: #FF5A1F;
+      --orange-hover: #E04B14;
+      --orange-subtle: rgba(255, 90, 31, 0.08);
+      --orange-glow: rgba(255, 90, 31, 0.18);
+      --orange-border: rgba(255, 90, 31, 0.25);
+      
+      /* Semantic Functional Accents */
+      --emerald: #10B981;
+      --emerald-subtle: rgba(16, 185, 129, 0.1);
+      --blue: #0284C7;
+      --blue-subtle: rgba(2, 132, 199, 0.1);
+      
+      /* Impeccable Motion Standards */
+      --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
+      --anim-duration: 0.28s;
+      
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+      --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+      --shadow-orange: 0 8px 24px -4px rgba(255, 90, 31, 0.25);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Outfit", sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Fixed Top Switcher Bar */
+    #nav-dock {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
+    }
+
+    .brand-mark-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-badge {
+      width: 32px;
+      height: 32px;
+      background: var(--orange-primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(255, 90, 31, 0.35);
+      transition: transform 0.2s var(--ease-snappy);
+    }
+    .brand-logo-badge:hover {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Animated Segmented Switcher */
+    .segmented-switch {
+      display: flex;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .segment-btn {
+      background: transparent;
+      border: none;
+      padding: 7px 16px;
+      font-family: "Outfit", sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s var(--ease-snappy);
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .segment-btn:hover {
+      color: var(--text-main);
+    }
+
+    .segment-btn.active {
+      color: #FFFFFF;
+      background: var(--orange-primary);
+      box-shadow: 0 2px 8px rgba(255, 90, 31, 0.35);
+    }
+
+    .dock-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dock-toggle-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .dock-toggle-btn:hover {
+      border-color: var(--orange-primary);
+      color: var(--orange-primary);
+    }
+
+    /* Canvas Viewport */
+    .canvas-container {
+      max-width: 1360px;
+      margin: 28px auto 80px auto;
+      padding: 0 20px;
+    }
+
+    .layout-experiment {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s var(--ease-snappy), transform 0.3s var(--ease-snappy);
+    }
+
+    .layout-experiment.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.view-all-mode .layout-experiment {
+      display: block !important;
+      opacity: 1 !important;
+      transform: none !important;
+      margin-bottom: 72px;
+      border-bottom: 2px dashed var(--border-subtle);
+      padding-bottom: 56px;
+    }
+
+    .experiment-tag-banner {
+      display: none;
+      background: var(--orange-subtle);
+      border: 1px solid var(--orange-border);
+      color: var(--orange-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 20px;
+    }
+
+    body.view-all-mode .experiment-tag-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Common Card Styling with Fluid Lift */
+    .lumi-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s var(--ease-snappy), box-shadow 0.25s var(--ease-snappy), border-color 0.25s var(--ease-snappy);
+    }
+    .lumi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: #CBD5E1;
+    }
+
+    .lumi-card-highlight {
+      background: linear-gradient(145deg, #FFFFFF 0%, #FFF8F5 100%);
+      border: 1px solid var(--orange-border);
+    }
+    .lumi-card-highlight:hover {
+      box-shadow: 0 8px 28px -4px rgba(255, 90, 31, 0.12);
+      border-color: rgba(255, 90, 31, 0.4);
+    }
+
+    /* Buttons with tactile physics */
+    .lumi-btn-primary {
+      background: var(--orange-primary);
+      color: #FFFFFF;
+      border: 1px solid var(--orange-primary);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 10px rgba(255, 90, 31, 0.25);
+      transition: all 0.2s var(--ease-snappy);
+    }
+    .lumi-btn-primary:hover {
+      background: var(--orange-hover);
+      box-shadow: 0 4px 16px rgba(255, 90, 31, 0.4);
+      transform: translateY(-1px);
+    }
+    .lumi-btn-primary:active {
+      transform: scale(0.98) translateY(1px);
+    }
+
+    .lumi-btn-secondary {
+      background: #FFFFFF;
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s var(--ease-snappy);
+    }
+    .lumi-btn-secondary:hover {
+      border-color: #94A3B8;
+      background: var(--bg-subtle);
+    }
+    .lumi-btn-secondary:active {
+      transform: scale(0.98) translateY(1px);
+    }
+
+    /* Pills & Badges */
+    .lumi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .badge-orange {
+      background: var(--orange-subtle);
+      color: var(--orange-primary);
+      border: 1px solid var(--orange-border);
+    }
+    .badge-emerald {
+      background: var(--emerald-subtle);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .badge-slate {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Progress Track */
+    .lumi-progress-track {
+      background: var(--bg-subtle);
+      height: 7px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+      position: relative;
+    }
+    .lumi-progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--orange-primary);
+      transition: width 0.6s var(--ease-snappy);
+    }
+
+    /* Clean Table */
+    .lumi-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .lumi-table th {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+    .lumi-table td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--bg-subtle);
+      color: var(--text-main);
+      transition: background 0.15s ease;
+    }
+    .lumi-table tr:hover td {
+      background: #FDFEFE;
+    }
+    .lumi-table td.amt {
+      text-align: right;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* SVG Icons styling */
+    .svg-icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+    }
+
+    /* ==========================================================================
+       EXPERIMENT 1: HORIZON SPLIT ARCHITECTURE (COMMAND DECK)
+       Sidebar Navigation & Demographics Rail + Wide Horizon Analytics Canvas
+       ========================================================================== */
+    .exp1-container {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .exp1-rail {
+      position: sticky;
+      top: 84px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .exp1-profile-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exp1-avatar-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FF5A1F 0%, #FF8A50 100%);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 17px;
+      box-shadow: 0 4px 12px rgba(255, 90, 31, 0.25);
+      margin-bottom: 12px;
+    }
+
+    .exp1-metric-pill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .exp1-mini-stat {
+      background: var(--bg-subtle);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+    .exp1-mini-stat div:first-child { color: var(--text-muted); font-size: 10px; text-transform: uppercase; font-weight: 600; }
+    .exp1-mini-stat div:last-child { font-weight: 700; color: var(--text-main); font-size: 13px; margin-top: 2px; }
+
+    /* Top 4 Metrics Ribbon */
+    .exp1-metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .exp1-stat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .exp1-stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: transparent;
+      transition: background 0.2s ease;
+    }
+    .exp1-stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: #CBD5E1;
+    }
+    .exp1-stat-card.highlight::before {
+      background: var(--orange-primary);
+    }
+
+    .exp1-stat-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .exp1-stat-number {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .exp1-stat-footer {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Main Chart and Category Split */
+    .exp1-canvas-split {
+      display: grid;
+      grid-template-columns: 1.9fr 1.1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* Interactive Filter Bar */
+    .exp1-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover {
+      border-color: #94A3B8;
+      color: var(--text-main);
+    }
+    .filter-chip.active {
+      background: var(--orange-subtle);
+      color: var(--orange-primary);
+      border-color: var(--orange-border);
+    }
+
+    /* ==========================================================================
+       EXPERIMENT 2: MODULAR BENTO CONSOLE (HIGH-DENSITY ADAPTIVE GRID)
+       High-contrast interactive Bento tiles with live NLP sandbox & circular gauge
+       ========================================================================== */
+    .exp2-bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .bento-hero {
+      grid-column: span 7;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF9F6 100%);
+      border: 1px solid var(--orange-border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .bento-hero:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-orange);
+    }
+
+    .bento-gauge {
+      grid-column: span 5;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .bento-gauge:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: #CBD5E1;
+    }
+
+    .bento-nlp-sandbox {
+      grid-column: span 6;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .bento-nlp-sandbox:hover {
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .bento-goals {
+      grid-column: span 6;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .bento-goals:hover {
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .bento-ledger {
+      grid-column: span 12;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .bento-ledger:hover {
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Live NLP Sandbox Inputs */
+    .nlp-input-wrap {
+      display: flex;
+      gap: 10px;
+      margin: 14px 0 16px 0;
+    }
+    .nlp-text-field {
+      flex: 1;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: "Outfit", sans-serif;
+      font-size: 13.5px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .nlp-text-field:focus {
+      border-color: var(--orange-primary);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.12);
+    }
+
+    .nlp-prediction-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s var(--ease-snappy);
+    }
+
+    /* SVG Circular Progress Ring */
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.8s var(--ease-snappy);
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* ==========================================================================
+       EXPERIMENT 3: EXECUTIVE TIMELINE & CO-PILOT FLOW
+       Chronological spend journey, interactive date scrubber, sliding drawer
+       ========================================================================== */
+    .exp3-hero {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .exp3-top-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .exp3-hero-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 32px;
+      align-items: end;
+      border-top: 1px solid var(--bg-subtle);
+      padding-top: 24px;
+    }
+
+    /* Interactive Timeline Scrubber */
+    .exp3-scrubber-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-bars-track {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 120px;
+      padding-top: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .timeline-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .timeline-bar {
+      width: 100%;
+      background: var(--bg-subtle);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.4s var(--ease-snappy), background 0.2s ease;
+      position: relative;
+    }
+    .timeline-col:hover .timeline-bar {
+      background: var(--orange-glow);
+    }
+    .timeline-col.active .timeline-bar {
+      background: var(--orange-primary);
+    }
+
+    .timeline-date-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .timeline-col.active .timeline-date-label {
+      color: var(--orange-primary);
+      font-weight: 700;
+    }
+
+    /* Milestone Horizontal Grid */
+    .exp3-milestones-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .exp3-goal-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s var(--ease-snappy);
+    }
+    .exp3-goal-card:hover {
+      transform: translateY(-3px);
+      border-color: #CBD5E1;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Fluid Live Counter Animation */
+    @keyframes pulseSoft {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .counter-updated {
+      animation: pulseSoft 0.3s var(--ease-snappy);
+    }
+
+    /* Responsive Adaptation */
+    @media (max-width: 992px) {
+      .exp1-container { grid-template-columns: 1fr; }
+      .exp1-rail { position: static; }
+      .exp1-metrics-ribbon { grid-template-columns: 1fr 1fr; }
+      .exp1-canvas-split { grid-template-columns: 1fr; }
+      .exp2-bento-grid { grid-template-columns: 1fr; }
+      .bento-hero, .bento-gauge, .bento-nlp-sandbox, .bento-goals, .bento-ledger { grid-column: span 1 !important; }
+      .exp3-hero-grid { grid-template-columns: 1fr; gap: 16px; }
+      .exp3-milestones-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP CONTROLLER DOCK
+       ======================================================================== -->
+  <header id="nav-dock">
+    <div class="brand-mark-group">
+      <div class="brand-logo-badge">P</div>
+      <div class="brand-title-wrap">
+        <span class="brand-title">Penny — Luminescent Modern + Orange</span>
+        <span class="brand-subtitle">3 Interactive Layout & Animation Experiments</span>
+      </div>
+    </div>
+
+    <nav class="segmented-switch" aria-label="Layout Switcher">
+      <button class="segment-btn active" onclick="setExperiment('exp1')">01. Horizon Command Split</button>
+      <button class="segment-btn" onclick="setExperiment('exp2')">02. Modular Bento Console</button>
+      <button class="segment-btn" onclick="setExperiment('exp3')">03. Executive Flow Timeline</button>
+    </nav>
+
+    <div class="dock-actions">
+      <button class="dock-toggle-btn" onclick="toggleCompareMode()">
+        <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+        <span>Compare All 3</span>
+      </button>
+      <button class="dock-toggle-btn" onclick="triggerSimulatedTransaction()">
+        <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Simulate Spend</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VIEWPORT CONTAINER
+       ======================================================================== -->
+  <main class="canvas-container">
+
+    <!-- ======================================================================
+         EXPERIMENT 1: HORIZON SPLIT ARCHITECTURE (COMMAND DECK)
+         ====================================================================== -->
+    <section id="exp1" class="layout-experiment active">
+      <div class="experiment-tag-banner">
+        <span>Experiment 01</span>
+        <span>Horizon Command Split · Lateral Profile Anchor + Fluid Analytics Deck</span>
+      </div>
+
+      <div class="exp1-container">
+        <!-- Left Lateral Anchor Rail -->
+        <aside class="exp1-rail">
+          <div class="exp1-profile-card">
+            <div class="exp1-avatar-circle">CS</div>
+            <div style="font-size:16px; font-weight:700; color:var(--text-main);">Ananya Sharma</div>
+            <div style="font-size:12px; color:var(--text-muted);">Computer Science Junior · Year 3</div>
+
+            <div style="margin-top:16px; border-top:1px solid var(--bg-subtle); padding-top:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                <span style="color:var(--text-muted); font-weight:600;">Guardrail State</span>
+                <span class="lumi-badge badge-emerald">Active (85% Cap)</span>
+              </div>
+              <div style="font-size:11.5px; color:var(--text-dim); margin-top:4px;">
+                Protects 15% liquid buffer of monthly earnings.
+              </div>
+            </div>
+
+            <div class="exp1-metric-pill-grid">
+              <div class="exp1-mini-stat">
+                <div>Monthly Income</div>
+                <div>₹99,000</div>
+              </div>
+              <div class="exp1-mini-stat">
+                <div>Financial Aid</div>
+                <div>₹49,500</div>
+              </div>
+              <div class="exp1-mini-stat">
+                <div>Payment Method</div>
+                <div>Credit Card</div>
+              </div>
+              <div class="exp1-mini-stat">
+                <div>Cohort Size</div>
+                <div>n = 48 peers</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lumi-card">
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:8px;">
+              Autonomous Advice
+            </div>
+            <p style="font-size:12.5px; color:#475569; line-height:1.6;">
+              Discretionary food delivery represents 34% of logged outlays. Reallocating ₹1,200/month accelerates your MacBook M3 target by 38 days.
+            </p>
+            <button class="lumi-btn-secondary" style="width:100%; justify-content:center; margin-top:14px;" onclick="quickDeposit('MacBook M3', 1200)">
+              Apply ₹1,200 to Goal
+            </button>
+          </div>
+        </aside>
+
+        <!-- Right Horizon Canvas -->
+        <div class="exp1-canvas">
+          <!-- 4 Horizon Stat Cards with Penny Orange -->
+          <div class="exp1-metrics-ribbon">
+            <div class="exp1-stat-card highlight">
+              <div class="exp1-stat-title">AI Monthly Living Budget</div>
+              <div class="exp1-stat-number" id="exp1-val-budget">₹24,800</div>
+              <div class="exp1-stat-footer">
+                <span class="lumi-badge badge-orange">Random Forest</span>
+                <span>Subsistence target</span>
+              </div>
+            </div>
+
+            <div class="exp1-stat-card">
+              <div class="exp1-stat-title">Spent This Cycle</div>
+              <div class="exp1-stat-number" id="exp1-val-spent">₹16,368</div>
+              <div class="exp1-stat-footer">
+                <span style="color:#059669; font-weight:600;">66.0% load</span>
+                <span>14 transactions</span>
+              </div>
+            </div>
+
+            <div class="exp1-stat-card">
+              <div class="exp1-stat-title">Remaining Safe Runway</div>
+              <div class="exp1-stat-number" style="color:var(--orange-primary);" id="exp1-val-runway">₹8,432</div>
+              <div class="exp1-stat-footer">
+                <span class="lumi-badge badge-emerald">On Track</span>
+                <span>18 days left</span>
+              </div>
+            </div>
+
+            <div class="exp1-stat-card">
+              <div class="exp1-stat-title">Daily Velocity Cap</div>
+              <div class="exp1-stat-number" id="exp1-val-velocity">₹468</div>
+              <div class="exp1-stat-footer">
+                <span>Safe 24-hr spending rate</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mid Split: Visual Horizon & Category Breakdown -->
+          <div class="exp1-canvas-split">
+            <div class="lumi-card">
+              <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+                <div>
+                  <div style="font-weight:700; font-size:16px;">Spending Velocity vs. Target Budget</div>
+                  <div style="font-size:12px; color:var(--text-muted);">Daily spend trajectory against your ₹24,800 ceiling</div>
+                </div>
+                <span class="lumi-badge badge-orange">November 2026</span>
+              </div>
+
+              <!-- Animated Horizon Progress Bar -->
+              <div style="margin:20px 0 10px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; font-weight:600; margin-bottom:6px;">
+                  <span>Monthly Budget Utilized: <b id="exp1-pct-label" style="color:var(--orange-primary);">66.0%</b></span>
+                  <span style="color:var(--text-muted);">₹16,368 / ₹24,800</span>
+                </div>
+                <div class="lumi-progress-track" style="height:9px;">
+                  <div id="exp1-progress-fill" class="lumi-progress-bar" style="width:66%;"></div>
+                </div>
+              </div>
+
+              <!-- Micro Bar Chart Representation -->
+              <div style="display:flex; align-items:flex-end; gap:8px; height:90px; padding-top:16px; margin-top:20px; border-top:1px solid var(--bg-subtle);">
+                <div style="flex:1; height:35%; background:var(--bg-subtle); border-radius:3px 3px 0 0;" title="01 Nov: ₹320"></div>
+                <div style="flex:1; height:45%; background:var(--bg-subtle); border-radius:3px 3px 0 0;" title="03 Nov: ₹450"></div>
+                <div style="flex:1; height:20%; background:var(--bg-subtle); border-radius:3px 3px 0 0;" title="05 Nov: ₹180"></div>
+                <div style="flex:1; height:85%; background:rgba(255, 90, 31, 0.4); border-radius:3px 3px 0 0;" title="08 Nov: ₹1,350"></div>
+                <div style="flex:1; height:60%; background:var(--bg-subtle); border-radius:3px 3px 0 0;" title="10 Nov: ₹600"></div>
+                <div style="flex:1; height:95%; background:var(--orange-primary); border-radius:3px 3px 0 0;" title="Today: ₹1,850"></div>
+              </div>
+            </div>
+
+            <div class="lumi-card">
+              <div style="font-weight:700; font-size:16px; margin-bottom:4px;">Category Allocation</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Verified distribution</div>
+
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; margin-bottom:3px;">
+                    <span>Food & Dining</span>
+                    <span>₹5,420 (33.1%)</span>
+                  </div>
+                  <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:33.1%; background:#FF5A1F;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; margin-bottom:3px;">
+                    <span>Technology & Hardware</span>
+                    <span>₹3,849 (23.5%)</span>
+                  </div>
+                  <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:23.5%; background:#0284C7;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; margin-bottom:3px;">
+                    <span>Education & Books</span>
+                    <span>₹2,850 (17.4%)</span>
+                  </div>
+                  <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:17.4%; background:#10B981;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; margin-bottom:3px;">
+                    <span>Transit & Travel</span>
+                    <span>₹1,540 (9.4%)</span>
+                  </div>
+                  <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:9.4%; background:#8B5CF6;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Filterable Ledger -->
+          <div class="lumi-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <div>
+                <div style="font-weight:700; font-size:16px;">Verified Transaction Ledger</div>
+                <div style="font-size:12px; color:var(--text-muted);">Real-time stream with active memory auto-categorization</div>
+              </div>
+              <div class="dock-actions">
+                <button class="lumi-btn-primary" onclick="openQuickModal()">
+                  <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Log Expense</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Chips -->
+            <div class="exp1-filter-bar">
+              <button class="filter-chip active" onclick="filterExp1('all', this)">All Sectors</button>
+              <button class="filter-chip" onclick="filterExp1('food', this)">Food</button>
+              <button class="filter-chip" onclick="filterExp1('travel', this)">Travel</button>
+              <button class="filter-chip" onclick="filterExp1('education', this)">Education</button>
+              <button class="filter-chip" onclick="filterExp1('technology', this)">Technology</button>
+              <button class="filter-chip" onclick="filterExp1('utilities', this)">Utilities</button>
+            </div>
+
+            <table class="lumi-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Classification</th>
+                  <th>Purchase Memo</th>
+                  <th style="text-align:right;">Disbursement</th>
+                  <th style="text-align:center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="exp1-ledger-body">
+                <tr data-cat="food">
+                  <td style="color:var(--text-muted);">11 Nov 2026</td>
+                  <td><span class="lumi-badge badge-orange">Food</span></td>
+                  <td style="font-weight:600;">Campus Canteen Lunch Meal</td>
+                  <td class="amt">₹240</td>
+                  <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="teachModel('Campus Canteen')">Teach AI</button></td>
+                </tr>
+                <tr data-cat="travel">
+                  <td style="color:var(--text-muted);">10 Nov 2026</td>
+                  <td><span class="lumi-badge badge-slate">Travel</span></td>
+                  <td style="font-weight:600;">Metro Rail Monthly Pass Recharge</td>
+                  <td class="amt">₹600</td>
+                  <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="teachModel('Metro Rail')">Teach AI</button></td>
+                </tr>
+                <tr data-cat="education">
+                  <td style="color:var(--text-muted);">08 Nov 2026</td>
+                  <td><span class="lumi-badge badge-emerald">Education</span></td>
+                  <td style="font-weight:600;">Data Structures & Algorithms Course Textbook</td>
+                  <td class="amt">₹1,350</td>
+                  <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="teachModel('Algorithms Textbook')">Teach AI</button></td>
+                </tr>
+                <tr data-cat="utilities">
+                  <td style="color:var(--text-muted);">06 Nov 2026</td>
+                  <td><span class="lumi-badge badge-slate">Utilities</span></td>
+                  <td style="font-weight:600;">Hostel Dedicated Fiber Internet Access</td>
+                  <td class="amt">₹799</td>
+                  <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="teachModel('Hostel Fiber')">Teach AI</button></td>
+                </tr>
+                <tr data-cat="technology">
+                  <td style="color:var(--text-muted);">04 Nov 2026</td>
+                  <td><span class="lumi-badge badge-orange">Technology</span></td>
+                  <td style="font-weight:600;">Logitech MX Master Optical Peripheral</td>
+                  <td class="amt">₹1,850</td>
+                  <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="teachModel('Logitech MX')">Teach AI</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         EXPERIMENT 2: MODULAR BENTO CONSOLE (HIGH-DENSITY ADAPTIVE GRID)
+         ====================================================================== -->
+    <section id="exp2" class="layout-experiment">
+      <div class="experiment-tag-banner">
+        <span>Experiment 02</span>
+        <span>Modular Bento Console · Adaptive Tiles, Interactive NLP Sandbox & Circular Gauge</span>
+      </div>
+
+      <div class="exp2-bento-grid">
+        <!-- Tile 1: Hero Large Module with Interactive Guardrail Slider -->
+        <div class="bento-hero">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="lumi-badge badge-orange">Predictive Model (Random Forest)</span>
+              <span style="font-size:12px; color:var(--text-muted);">R² = 0.22 · MAE = ₹8,340</span>
+            </div>
+            <div style="font-size:13px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:16px;">
+              Predicted Monthly Subsistence
+            </div>
+            <div style="font-size:46px; font-weight:800; color:var(--text-main); letter-spacing:-0.04em; line-height:1; margin:8px 0;" id="bento-budget-val">
+              ₹24,800
+            </div>
+            <p style="font-size:13px; color:#475569; max-width:54ch;">
+              Learned from recurring living categories only (housing, food, transit, utilities). Tuition & semester hardware are isolated from monthly velocity calculations.
+            </p>
+          </div>
+
+          <!-- Dynamic Guardrail Adjustment Slider -->
+          <div style="margin-top:24px; background:rgba(255,255,255,0.8); border:1px solid var(--orange-border); border-radius:12px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:6px;">
+              <span>Simulate Income Guardrail Ceiling</span>
+              <span style="color:var(--orange-primary);" id="bento-slider-lbl">85% of Income (₹84,150 Cap)</span>
+            </div>
+            <input type="range" min="50" max="95" value="85" style="width:100%; accent-color:var(--orange-primary);" oninput="updateBentoGuardrail(this.value)">
+          </div>
+        </div>
+
+        <!-- Tile 2: Circular SVG Utilization Gauge -->
+        <div class="bento-gauge">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:12px;">
+            Monthly Utilization
+          </div>
+          
+          <div style="position:relative; width:130px; height:130px; margin:0 auto 14px auto;">
+            <svg width="130" height="130" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#F1F5F9" stroke-width="10"/>
+              <circle id="bento-circle-stroke" class="progress-ring-circle" cx="60" cy="60" r="50" fill="none" stroke="var(--orange-primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.159" stroke-dashoffset="106.8"/>
+            </svg>
+            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+              <span style="font-size:26px; font-weight:800; color:var(--text-main);" id="bento-circle-pct">66%</span>
+              <span style="font-size:10.5px; color:var(--text-muted); font-weight:600;">COMMITTED</span>
+            </div>
+          </div>
+
+          <div style="font-size:13px; font-weight:700; color:var(--orange-primary);">₹8,432 Remaining</div>
+          <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Safe daily velocity: ₹468/day</div>
+        </div>
+
+        <!-- Tile 3: Live NLP Expense Sandbox -->
+        <div class="bento-nlp-sandbox">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:700; font-size:16px;">NLP Categorizer Sandbox</div>
+            <span class="lumi-badge badge-orange">Active Memory</span>
+          </div>
+          <div style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">Type any purchase to preview classification</div>
+
+          <div class="nlp-input-wrap">
+            <input type="text" id="bento-nlp-query" class="nlp-text-field" placeholder="e.g. Starbucks iced latte, Uber to airport" value="Campus bookstore notebook" oninput="runBentoNLP(this.value)">
+            <button class="lumi-btn-primary" onclick="simulateBentoLog()">Log</button>
+          </div>
+
+          <div class="nlp-prediction-pill">
+            <div>
+              <div style="font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Predicted Category</div>
+              <div style="font-size:15px; font-weight:700; color:var(--text-main);" id="bento-nlp-cat">Education & Books</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10.5px; font-weight:700; text-transform:uppercase; color:var(--text-muted);">Confidence</div>
+              <div style="font-size:14px; font-weight:700; color:#059669;" id="bento-nlp-conf">98.4% Match</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 4: Sinking Fund Milestones with Interactive Deposits -->
+        <div class="bento-goals">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div style="font-weight:700; font-size:16px;">Sinking Fund Milestones</div>
+            <span style="font-size:12px; color:var(--text-muted);">3 Active Targets</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="border-bottom:1px solid var(--bg-subtle); padding-bottom:12px;">
+              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
+                <span>MacBook M3 Apparatus</span>
+                <span style="color:var(--orange-primary);" id="bento-goal-1-txt">₹52,000 / ₹85,000</span>
+              </div>
+              <div class="lumi-progress-track">
+                <div id="bento-goal-1-bar" class="lumi-progress-bar" style="width:61.2%;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--text-muted);">
+                <span>61.2% Funded · 5 mos remaining</span>
+                <button class="lumi-btn-secondary" style="padding:2px 8px; font-size:11px;" onclick="bentoAddGoal(1, 1000)">+ ₹1,000</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700;">
+                <span>Hackathon Expedition</span>
+                <span style="color:var(--orange-primary);" id="bento-goal-2-txt">₹14,500 / ₹20,000</span>
+              </div>
+              <div class="lumi-progress-track">
+                <div id="bento-goal-2-bar" class="lumi-progress-bar" style="width:72.5%; background:#0284C7;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--text-muted);">
+                <span>72.5% Funded · 2 mos remaining</span>
+                <button class="lumi-btn-secondary" style="padding:2px 8px; font-size:11px;" onclick="bentoAddGoal(2, 500)">+ ₹500</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 5: Wide Ledger Table -->
+        <div class="bento-ledger">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div style="font-weight:700; font-size:17px;">Ledger Data Matrix</div>
+            <span class="lumi-badge badge-slate">Showing Recent Entries</span>
+          </div>
+
+          <table class="lumi-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Classification</th>
+                <th>Purchase Memo</th>
+                <th style="text-align:right;">Disbursement</th>
+                <th style="text-align:right;">Balance Post-Txn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:var(--text-muted);">11 Nov 2026</td>
+                <td><span class="lumi-badge badge-orange">Food & Dining</span></td>
+                <td style="font-weight:600;">Campus Canteen Lunch Meal</td>
+                <td class="amt">₹240</td>
+                <td class="amt" style="color:var(--text-muted);">₹8,432</td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">10 Nov 2026</td>
+                <td><span class="lumi-badge badge-slate">Transit</span></td>
+                <td style="font-weight:600;">Metro Rail Monthly Pass Recharge</td>
+                <td class="amt">₹600</td>
+                <td class="amt" style="color:var(--text-muted);">₹8,672</td>
+              </tr>
+              <tr>
+                <td style="color:var(--text-muted);">08 Nov 2026</td>
+                <td><span class="lumi-badge badge-emerald">Academic</span></td>
+                <td style="font-weight:600;">Data Structures & Algorithms Course Textbook</td>
+                <td class="amt">₹1,350</td>
+                <td class="amt" style="color:var(--text-muted);">₹9,272</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         EXPERIMENT 3: EXECUTIVE FLOW TIMELINE & CO-PILOT JOURNEY
+         ====================================================================== -->
+    <section id="exp3" class="layout-experiment">
+      <div class="experiment-tag-banner">
+        <span>Experiment 03</span>
+        <span>Executive Flow Timeline · Chronological Narrative, Interactive Date Scrubber & Co-Pilot Drawer</span>
+      </div>
+
+      <!-- Executive Hero Horizon -->
+      <article class="exp3-hero">
+        <div class="exp3-top-status">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="lumi-badge badge-orange">Academic Term 2026-2027</span>
+            <span style="font-size:12.5px; color:var(--text-muted);">Computer Science Junior (Cohort n=48)</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-muted);">
+            Last Rebalanced: <b>12 November 2026</b>
+          </div>
+        </div>
+
+        <h1 style="font-size:clamp(30px, 3.8vw, 44px); font-weight:800; letter-spacing:-0.03em; line-height:1.15; margin-bottom:12px;">
+          Pacing at <span style="color:var(--orange-primary);">₹468 per day</span> preserves ₹8,432 for end-of-term liquidity.
+        </h1>
+        <p style="font-size:14.5px; color:var(--text-muted); max-width:65ch; margin-bottom:24px;">
+          Your actual outlays are tracking comfortably beneath the ₹24,800 living benchmark recommended by the Random Forest model. All essential expenses remain fully funded.
+        </p>
+
+        <div class="exp3-hero-grid">
+          <div>
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.06em;">Current Cycle Runway</div>
+            <div style="font-size:38px; font-weight:800; color:var(--orange-primary); letter-spacing:-0.03em;">₹8,432</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">18 days remaining until monthly refresh</div>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.06em;">Predicted Benchmark</div>
+            <div style="font-size:38px; font-weight:800; color:var(--text-main); letter-spacing:-0.03em;">₹24,800</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Affordability ceiling: ₹84,150</div>
+          </div>
+          <div style="text-align:right;">
+            <button class="lumi-btn-primary" onclick="openQuickModal()">
+              <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Record Purchase</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Interactive Scrubber Box -->
+      <div class="exp3-scrubber-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; font-size:16px;">Daily Spending Trajectory & Date Scrubber</div>
+            <div style="font-size:12.5px; color:var(--text-muted);">Click any column to isolate that day's financial activity</div>
+          </div>
+          <div style="font-size:13px; font-weight:700; color:var(--orange-primary);" id="scrubber-active-date">
+            Viewing: Today (11 Nov) — ₹1,850 Logged
+          </div>
+        </div>
+
+        <div class="timeline-bars-track">
+          <div class="timeline-col" onclick="scrubDate('02 Nov', 420, this)">
+            <div class="timeline-bar" style="height:25px;"></div>
+            <span class="timeline-date-label">02</span>
+          </div>
+          <div class="timeline-col" onclick="scrubDate('04 Nov', 1850, this)">
+            <div class="timeline-bar" style="height:90px;"></div>
+            <span class="timeline-date-label">04</span>
+          </div>
+          <div class="timeline-col" onclick="scrubDate('06 Nov', 799, this)">
+            <div class="timeline-bar" style="height:48px;"></div>
+            <span class="timeline-date-label">06</span>
+          </div>
+          <div class="timeline-col" onclick="scrubDate('08 Nov', 1350, this)">
+            <div class="timeline-bar" style="height:75px;"></div>
+            <span class="timeline-date-label">08</span>
+          </div>
+          <div class="timeline-col" onclick="scrubDate('10 Nov', 600, this)">
+            <div class="timeline-bar" style="height:38px;"></div>
+            <span class="timeline-date-label">10</span>
+          </div>
+          <div class="timeline-col active" onclick="scrubDate('11 Nov (Today)', 240, this)">
+            <div class="timeline-bar" style="height:20px;"></div>
+            <span class="timeline-date-label">11</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Sinking Fund Milestone Cards -->
+      <div class="exp3-milestones-row">
+        <div class="exp3-goal-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span class="lumi-badge badge-orange">High Priority</span>
+            <span style="font-size:11.5px; color:var(--text-muted);">Target: April 2027</span>
+          </div>
+          <div style="font-weight:700; font-size:16px;">MacBook M3 Rig</div>
+          <div style="font-size:24px; font-weight:800; color:var(--text-main); margin:6px 0;">₹52,000 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ ₹85,000</span></div>
+          <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:61.2%;"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+            <span>61.2% Complete</span>
+            <span>₹6,600 / mo required</span>
+          </div>
+        </div>
+
+        <div class="exp3-goal-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span class="lumi-badge badge-slate">Medium Priority</span>
+            <span style="font-size:11.5px; color:var(--text-muted);">Target: Jan 2027</span>
+          </div>
+          <div style="font-weight:700; font-size:16px;">Hackathon Expedition</div>
+          <div style="font-size:24px; font-weight:800; color:var(--text-main); margin:6px 0;">₹14,500 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ ₹20,000</span></div>
+          <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:72.5%; background:#0284C7;"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+            <span>72.5% Complete</span>
+            <span>₹2,750 / mo required</span>
+          </div>
+        </div>
+
+        <div class="exp3-goal-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span class="lumi-badge badge-emerald">Safe Reserve</span>
+            <span style="font-size:11.5px; color:var(--text-muted);">Permanent Buffer</span>
+          </div>
+          <div style="font-weight:700; font-size:16px;">Emergency Liquid Reserve</div>
+          <div style="font-size:24px; font-weight:800; color:var(--text-main); margin:6px 0;">₹18,000 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ ₹30,000</span></div>
+          <div class="lumi-progress-track"><div class="lumi-progress-bar" style="width:60%; background:#10B981;"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-top:8px;">
+            <span>60.0% Complete</span>
+            <span>Funded via 15% buffer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL: QUICK ADD EXPENSE WITH LIVE NLP AUTO-TAGGER
+       ======================================================================== -->
+  <div id="quick-modal-backdrop" style="position:fixed; inset:0; background:rgba(15,23,42,0.45); backdrop-filter:blur(4px); z-index:9998; display:none; opacity:0; transition:opacity 0.2s ease;"></div>
+  
+  <div id="quick-modal" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -46%) scale(0.96); background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:16px; padding:28px; width:90%; max-width:480px; z-index:9999; box-shadow:var(--shadow-lg); display:none; opacity:0; transition:all 0.25s var(--ease-snappy);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div style="font-weight:800; font-size:18px; color:var(--text-main);">Log Actual Disbursement</div>
+      <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:20px;" onclick="closeQuickModal()">&times;</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div>
+        <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:4px;">Purchase Description</label>
+        <input type="text" id="modal-desc" class="nlp-text-field" placeholder="e.g. Swiggy Dinner, Metro Card Recharge" style="width:100%;" oninput="modalAutoPredict(this.value)">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:4px;">Amount (₹)</label>
+          <input type="number" id="modal-amt" class="nlp-text-field" value="350" style="width:100%;">
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:4px;">Date</label>
+          <input type="text" id="modal-date" class="nlp-text-field" value="2026-11-12" style="width:100%;">
+        </div>
+      </div>
+
+      <!-- Live Category Preview in Modal -->
+      <div id="modal-prediction-box" style="background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Auto-Detected Category</span>
+          <div style="font-weight:700; font-size:14px; color:var(--orange-primary);" id="modal-cat-name">Food & Dining</div>
+        </div>
+        <span class="lumi-badge badge-orange" id="modal-cat-conf">98% Match</span>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="lumi-btn-secondary" style="flex:1; justify-content:center;" onclick="closeQuickModal()">Cancel</button>
+        <button class="lumi-btn-primary" style="flex:2; justify-content:center;" onclick="submitQuickModal()">Confirm & Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-badge" style="position:fixed; bottom:24px; right:24px; z-index:99999; background:var(--text-main); color:#FFFFFF; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:600; box-shadow:var(--shadow-lg); display:none; transform:translateY(10px); transition:all 0.25s var(--ease-snappy);">
+    Notification message
+  </div>
+
+  <!-- ========================================================================
+       CLIENT CONTROLLER SCRIPT (INTERACTION & PHYSICS)
+       ======================================================================== -->
+  <script>
+    let activeExp = 'exp1';
+    let currentBudget = 24800;
+    let currentSpent = 16368;
+
+    function setExperiment(expId) {
+      document.body.classList.remove('view-all-mode');
+      activeExp = expId;
+
+      document.querySelectorAll('.segment-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(expId)) {
+          btn.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.layout-experiment').forEach(el => {
+        el.classList.remove('active');
+      });
+
+      const target = document.getElementById(expId);
+      if (target) {
+        target.classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleCompareMode() {
+      document.body.classList.toggle('view-all-mode');
+      const isAll = document.body.classList.contains('view-all-mode');
+      if (isAll) {
+        document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+        showToast("Compare mode active: Scrolling all 3 experiments");
+      } else {
+        setExperiment(activeExp);
+      }
+    }
+
+    /* Modal Controls */
+    function openQuickModal() {
+      const modal = document.getElementById('quick-modal');
+      const back = document.getElementById('quick-modal-backdrop');
+      back.style.display = 'block';
+      modal.style.display = 'block';
+      setTimeout(() => {
+        back.style.opacity = '1';
+        modal.style.opacity = '1';
+        modal.style.transform = 'translate(-50%, -50%) scale(1)';
+      }, 10);
+    }
+
+    function closeQuickModal() {
+      const modal = document.getElementById('quick-modal');
+      const back = document.getElementById('quick-modal-backdrop');
+      back.style.opacity = '0';
+      modal.style.opacity = '0';
+      modal.style.transform = 'translate(-50%, -46%) scale(0.96)';
+      setTimeout(() => {
+        back.style.display = 'none';
+        modal.style.display = 'none';
+      }, 200);
+    }
+
+    function modalAutoPredict(text) {
+      const t = text.toLowerCase();
+      let cat = "Miscellaneous";
+      let conf = "84% Match";
+
+      if (t.includes('canteen') || t.includes('swiggy') || t.includes('food') || t.includes('dinner') || t.includes('pizza') || t.includes('burger')) {
+        cat = "Food & Dining"; conf = "99% Match";
+      } else if (t.includes('metro') || t.includes('uber') || t.includes('travel') || t.includes('transit') || t.includes('cab')) {
+        cat = "Transit & Travel"; conf = "97% Match";
+      } else if (t.includes('book') || t.includes('algorithm') || t.includes('notes') || t.includes('tuition')) {
+        cat = "Education & Books"; conf = "96% Match";
+      } else if (t.includes('laptop') || t.includes('mouse') || t.includes('wifi') || t.includes('fiber') || t.includes('tech')) {
+        cat = "Technology & Hardware"; conf = "98% Match";
+      }
+
+      document.getElementById('modal-cat-name').textContent = cat;
+      document.getElementById('modal-cat-conf').textContent = conf;
+    }
+
+    function submitQuickModal() {
+      const desc = document.getElementById('modal-desc').value.trim() || "Campus Purchase";
+      const amt = parseFloat(document.getElementById('modal-amt').value) || 250;
+      const cat = document.getElementById('modal-cat-name').textContent;
+
+      currentSpent += amt;
+      updateFinancialMetrics();
+
+      // Prepend row to Experiment 1 table
+      const tbody = document.getElementById('exp1-ledger-body');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:var(--text-muted);">Today</td>
+        <td><span class="lumi-badge badge-orange">${cat.split(' ')[0]}</span></td>
+        <td style="font-weight:600;">${desc}</td>
+        <td class="amt">₹${amt.toLocaleString()}</td>
+        <td style="text-align:center;"><button class="lumi-btn-secondary" style="padding:4px 8px; font-size:11px;">Learned</button></td>
+      `;
+      tbody.prepend(tr);
+
+      closeQuickModal();
+      showToast(`Added ₹${amt.toLocaleString()} (${desc})`);
+    }
+
+    /* Simulation Trigger */
+    function triggerSimulatedTransaction() {
+      const samples = [
+        { desc: "Campus Cold Coffee & Sandwich", amt: 180 },
+        { desc: "Auto-Rickshaw to Metro Station", amt: 120 },
+        { desc: "Python Library Subscription", amt: 499 }
+      ];
+      const s = samples[Math.floor(Math.random() * samples.length)];
+      currentSpent += s.amt;
+      updateFinancialMetrics();
+      showToast(`Simulated transaction: ₹${s.amt} for ${s.desc}`);
+    }
+
+    function updateFinancialMetrics() {
+      const runway = Math.max(currentBudget - currentSpent, 0);
+      const pct = Math.min((currentSpent / currentBudget) * 100, 100);
+      const vel = Math.max(Math.round(runway / 18), 0);
+
+      // Exp 1
+      const eSpent = document.getElementById('exp1-val-spent');
+      const eRunway = document.getElementById('exp1-val-runway');
+      const eVel = document.getElementById('exp1-val-velocity');
+      const eBar = document.getElementById('exp1-progress-fill');
+      const eLabel = document.getElementById('exp1-pct-label');
+
+      if (eSpent) {
+        eSpent.textContent = `₹${currentSpent.toLocaleString()}`;
+        eSpent.classList.add('counter-updated');
+        setTimeout(() => eSpent.classList.remove('counter-updated'), 300);
+      }
+      if (eRunway) eRunway.textContent = `₹${runway.toLocaleString()}`;
+      if (eVel) eVel.textContent = `₹${vel.toLocaleString()}`;
+      if (eBar) eBar.style.width = `${pct.toFixed(1)}%`;
+      if (eLabel) eLabel.textContent = `${pct.toFixed(1)}%`;
+
+      // Exp 2
+      const bPct = document.getElementById('bento-circle-pct');
+      const bCircle = document.getElementById('bento-circle-stroke');
+      if (bPct) bPct.textContent = `${Math.round(pct)}%`;
+      if (bCircle) {
+        const offset = 314.159 - (314.159 * (pct / 100));
+        bCircle.style.strokeDashoffset = offset;
+      }
+    }
+
+    /* Exp 1 Filter */
+    function filterExp1(sector, btn) {
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const rows = document.querySelectorAll('#exp1-ledger-body tr');
+      rows.forEach(r => {
+        if (sector === 'all' || r.getAttribute('data-cat') === sector) {
+          r.style.display = '';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    }
+
+    /* Exp 2 Bento Guardrail Slider */
+    function updateBentoGuardrail(val) {
+      const income = 99000;
+      const cap = Math.round(income * (val / 100));
+      document.getElementById('bento-slider-lbl').textContent = `${val}% of Income (₹${cap.toLocaleString()} Cap)`;
+    }
+
+    function runBentoNLP(query) {
+      const q = query.toLowerCase();
+      let cat = "Technology & Hardware";
+      let conf = "94.2% Match";
+
+      if (q.includes('coffee') || q.includes('lunch') || q.includes('dinner') || q.includes('pizza') || q.includes('swiggy') || q.includes('eat')) {
+        cat = "Food & Dining"; conf = "99.1% Match";
+      } else if (q.includes('book') || q.includes('notebook') || q.includes('tuition') || q.includes('course')) {
+        cat = "Education & Books"; conf = "98.4% Match";
+      } else if (q.includes('metro') || q.includes('uber') || q.includes('transit') || q.includes('flight')) {
+        cat = "Transit & Travel"; conf = "97.8% Match";
+      } else if (q.includes('netflix') || q.includes('movie') || q.includes('game')) {
+        cat = "Entertainment"; conf = "99.0% Match";
+      }
+
+      document.getElementById('bento-nlp-cat').textContent = cat;
+      document.getElementById('bento-nlp-conf').textContent = conf;
+    }
+
+    function simulateBentoLog() {
+      const q = document.getElementById('bento-nlp-query').value.trim() || "Item";
+      currentSpent += 350;
+      updateFinancialMetrics();
+      showToast(`Logged ₹350 for "${q}"`);
+    }
+
+    function bentoAddGoal(id, amt) {
+      if (id === 1) {
+        document.getElementById('bento-goal-1-txt').textContent = "₹53,000 / ₹85,000";
+        document.getElementById('bento-goal-1-bar').style.width = "62.4%";
+      } else {
+        document.getElementById('bento-goal-2-txt').textContent = "₹15,000 / ₹20,000";
+        document.getElementById('bento-goal-2-bar').style.width = "75.0%";
+      }
+      showToast(`Deposited ₹${amt.toLocaleString()} to goal!`);
+    }
+
+    /* Exp 3 Date Scrubber */
+    function scrubDate(dateStr, amt, col) {
+      document.querySelectorAll('.timeline-col').forEach(c => c.classList.remove('active'));
+      col.classList.add('active');
+      document.getElementById('scrubber-active-date').textContent = `Viewing: ${dateStr} — ₹${amt.toLocaleString()} Logged`;
+    }
+
+    function quickDeposit(goalName, amt) {
+      showToast(`Redirected ₹${amt.toLocaleString()} to ${goalName}`);
+    }
+
+    function teachModel(item) {
+      showToast(`Permanent rule learned for "${item}"`);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast-badge');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => {
+        t.style.opacity = '1';
+        t.style.transform = 'translateY(0)';
+      }, 10);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(10px)';
+        setTimeout(() => t.style.display = 'none', 250);
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penny — Design System Showcase & Architectural Explorations</title>
+  
+  <!-- Curated Typeface Roster from Impeccable Design Standards -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       GLOBAL SHOWCASE CONTROLLER & RESET
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #E8ECEF;
+      color: #1A1F26;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Fixed Top Showcase Dock */
+    #showcase-dock {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      background: #111620;
+      color: #FFFFFF;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .dock-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dock-logo-tag {
+      background: #2D3748;
+      color: #A0AEC0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dock-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #F7FAFC;
+      letter-spacing: -0.01em;
+    }
+
+    .dock-nav {
+      display: flex;
+      gap: 6px;
+      background: #1A202C;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dock-btn {
+      background: transparent;
+      color: #A0AEC0;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .dock-btn.active {
+      background: #3182CE;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(49, 130, 206, 0.4);
+    }
+
+    .dock-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dock-spec-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .dock-spec-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+
+    /* Design Specs Drawer Banner */
+    #spec-banner {
+      background: #1A202C;
+      color: #CBD5E0;
+      padding: 12px 24px;
+      font-size: 12.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: none;
+      transition: all 0.2s ease;
+    }
+
+    #spec-banner.visible {
+      display: block;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .spec-item b {
+      color: #FFFFFF;
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .swatch-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: inline-block;
+    }
+
+    /* Viewport Container */
+    .viewport-canvas {
+      max-width: 1400px;
+      margin: 24px auto 80px auto;
+      padding: 0 16px;
+    }
+
+    .design-version {
+      display: none;
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+
+    .design-version.active {
+      display: block;
+    }
+
+    body.show-all-mode .design-version {
+      display: block !important;
+      margin-bottom: 60px;
+      border: 2px solid #CBD5E0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    body.show-all-mode .version-divider-label {
+      display: block !important;
+    }
+
+    .version-divider-label {
+      display: none;
+      background: #2D3748;
+      color: #FFFFFF;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SVG Icon Helpers */
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+    }
+
+    /* ==========================================================================
+       VERSION 1: ARCHITECTURAL & SCANDINAVIAN MINIMAL
+       Inspiration: Asset 07 (Nody) & Asset 05 (Clarimol)
+       Palette: Sunlit Travertine (#F9F6F0), Raw Terracotta (#C25E3E), Umber (#1C1917)
+       Fonts: Plus Jakarta Sans + Newsreader Editorial Italic
+       ========================================================================== */
+    .v1-root {
+      background-color: #F9F6F0;
+      color: #1C1917;
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 48px;
+      border-radius: 4px;
+      border: 1px solid #EBE5DA;
+    }
+
+    .v1-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid #E5DFD3;
+      padding-bottom: 16px;
+      margin-bottom: 36px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #78716C;
+    }
+
+    .v1-brand {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1C1917;
+      letter-spacing: -0.02em;
+    }
+
+    .v1-hero {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 48px;
+      border-bottom: 1px solid #E5DFD3;
+      padding-bottom: 40px;
+    }
+
+    .v1-hero-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(38px, 4.5vw, 56px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: #1C1917;
+    }
+
+    .v1-hero-title em {
+      font-style: italic;
+      color: #C25E3E;
+    }
+
+    .v1-hero-summary {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #57534E;
+      max-width: 38ch;
+    }
+
+    /* Asymmetric Metrics Grid */
+    .v1-metrics {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 48px;
+    }
+
+    .v1-metric-block {
+      border-top: 1px solid #1C1917;
+      padding-top: 14px;
+    }
+
+    .v1-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #78716C;
+      margin-bottom: 8px;
+    }
+
+    .v1-metric-value {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #1C1917;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .v1-metric-note {
+      font-size: 12px;
+      color: #78716C;
+      margin-top: 8px;
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+    }
+
+    /* Content Two-Column Architecture */
+    .v1-split {
+      display: grid;
+      grid-template-columns: 1.8fr 1.2fr;
+      gap: 48px;
+    }
+
+    .v1-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+    }
+
+    .v1-section-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #1C1917;
+      text-transform: uppercase;
+    }
+
+    /* Minimalist Travertine Table */
+    .v1-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    .v1-table th {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #78716C;
+      padding: 10px 0;
+      border-bottom: 1px solid #1C1917;
+    }
+
+    .v1-table td {
+      padding: 14px 0;
+      border-bottom: 1px solid #EBE5DA;
+      color: #292524;
+    }
+
+    .v1-table td.amount {
+      text-align: right;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .v1-tag {
+      display: inline-block;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #C25E3E;
+      border-left: 2px solid #C25E3E;
+      padding-left: 6px;
+    }
+
+    /* Dispatch Note */
+    .v1-advice-card {
+      background: #F2ECE0;
+      padding: 24px;
+      border-left: 3px solid #C25E3E;
+      margin-bottom: 28px;
+    }
+
+    .v1-advice-card p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #44403C;
+    }
+
+    .v1-advice-card strong {
+      color: #1C1917;
+    }
+
+    .v1-milestone {
+      padding: 14px 0;
+      border-bottom: 1px solid #E5DFD3;
+    }
+
+    .v1-milestone-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .v1-progress-bar {
+      height: 4px;
+      background: #E5DFD3;
+      width: 100%;
+      border-radius: 0;
+      margin: 8px 0;
+    }
+
+    .v1-progress-fill {
+      height: 100%;
+      background: #C25E3E;
+    }
+
+    /* ==========================================================================
+       VERSION 2: INDUSTRIAL HARDWARE & TECHNICAL SPEC SHEET
+       Inspiration: Asset 33 (Steel Synkro) & Asset 16 (Framerate)
+       Palette: Chalk Clay (#ECEEEB), Graphite Slate (#14181B), Cadmium Orange (#FF5500)
+       Fonts: Space Grotesk + JetBrains Mono
+       ========================================================================== */
+    .v2-root {
+      background-color: #ECEEEB;
+      color: #14181B;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      padding: 40px;
+      border-radius: 2px;
+      border: 1px solid #C8CEC5;
+    }
+
+    .v2-header-console {
+      background: #E2E6E0;
+      border: 1px solid #C8CEC5;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .v2-console-id {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #5A6460;
+    }
+
+    .v2-console-id span {
+      color: #FF5500;
+      font-weight: 800;
+    }
+
+    .v2-status-pill {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      background: #D5DCD3;
+      padding: 4px 10px;
+      border-radius: 2px;
+      border: 1px solid #BDC7BB;
+      color: #14181B;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .v2-dot {
+      width: 6px;
+      height: 6px;
+      background: #FF5500;
+      display: inline-block;
+    }
+
+    /* Telemetry Modules Bay */
+    .v2-bays-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .v2-bay {
+      background: #E4E8E2;
+      border: 1px solid #C8CEC5;
+      padding: 16px;
+      position: relative;
+    }
+
+    .v2-bay-tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      color: #6A7570;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .v2-bay-value {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: #14181B;
+      letter-spacing: -0.04em;
+    }
+
+    .v2-bay-sub {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: #5A6460;
+      margin-top: 6px;
+    }
+
+    /* Hardware Sub-Console */
+    .v2-layout-matrix {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .v2-panel {
+      background: #E8ECE6;
+      border: 1px solid #C8CEC5;
+      padding: 20px;
+    }
+
+    .v2-panel-title {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #14181B;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #C8CEC5;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .v2-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+    }
+
+    .v2-data-table th {
+      color: #6A7570;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 8px 6px;
+      border-bottom: 1px solid #C8CEC5;
+      text-align: left;
+    }
+
+    .v2-data-table td {
+      padding: 10px 6px;
+      border-bottom: 1px solid #D5DBD2;
+      color: #14181B;
+    }
+
+    .v2-data-table tr:hover td {
+      background: #DCE2DA;
+    }
+
+    .v2-mono-badge {
+      background: #D3DAD0;
+      padding: 2px 6px;
+      font-size: 10px;
+      border: 1px solid #B8C2B4;
+    }
+
+    .v2-param-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #D5DBD2;
+    }
+
+    .v2-param-row span:first-child {
+      color: #5A6460;
+    }
+
+    .v2-param-row span:last-child {
+      font-weight: 700;
+      color: #14181B;
+    }
+
+    /* ==========================================================================
+       VERSION 3: BROADSIDE EDITORIAL & FINANCIAL GAZETTE
+       Inspiration: Asset 25 (Global New Yorker) & Asset 23 (Lorenzo)
+       Palette: Unbleached Newsprint (#F6F3EC), Ink Black (#121210), Oxblood (#7B1C28)
+       Fonts: Playfair Display + Source Serif 4
+       ========================================================================== */
+    .v3-root {
+      background-color: #F6F3EC;
+      color: #121210;
+      font-family: "Source Serif 4", Georgia, serif;
+      padding: 44px;
+      border-radius: 0;
+      border: 1px solid #DFD9CE;
+    }
+
+    /* Classic Broadside Masthead */
+    .v3-gazette-masthead {
+      text-align: center;
+      border-bottom: 3px double #121210;
+      padding-bottom: 18px;
+      margin-bottom: 30px;
+    }
+
+    .v3-gazette-datebar {
+      display: flex;
+      justify-content: space-between;
+      font-family: "DM Sans", sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-top: 1px solid #121210;
+      border-bottom: 1px solid #121210;
+      padding: 6px 0;
+      margin-bottom: 16px;
+      color: #555047;
+    }
+
+    .v3-gazette-title {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(34px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .v3-gazette-sub {
+      font-size: 13px;
+      font-style: italic;
+      color: #7B1C28;
+    }
+
+    /* Broadside 3-Column Ledger */
+    .v3-broadside-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr 1fr;
+      gap: 32px;
+    }
+
+    .v3-column {
+      position: relative;
+    }
+
+    .v3-column:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -16px;
+      width: 1px;
+      height: 100%;
+      background: #D6CEBF;
+    }
+
+    .v3-lead-hed {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: #121210;
+    }
+
+    .v3-body-p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #33312C;
+      margin-bottom: 14px;
+      text-align: justify;
+    }
+
+    .v3-banner-stat {
+      border: 1px solid #7B1C28;
+      padding: 16px;
+      margin: 18px 0;
+      text-align: center;
+      background: #FAF7F0;
+    }
+
+    .v3-banner-stat .num {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: #7B1C28;
+      line-height: 1.1;
+    }
+
+    .v3-banner-stat .cap {
+      font-family: "DM Sans", sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #635C50;
+      margin-top: 4px;
+    }
+
+    .v3-docket-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    .v3-docket-table th {
+      border-bottom: 1px solid #121210;
+      padding: 6px 0;
+      text-align: left;
+      font-family: "DM Sans", sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .v3-docket-table td {
+      padding: 10px 0;
+      border-bottom: 1px dotted #CDC3B2;
+      color: #24221D;
+    }
+
+    .v3-docket-table td.amt {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .v3-signed-note {
+      font-style: italic;
+      font-size: 12.5px;
+      line-height: 1.6;
+      border-left: 2px solid #7B1C28;
+      padding-left: 12px;
+      margin-top: 20px;
+      color: #555047;
+    }
+
+    /* ==========================================================================
+       VERSION 4: NEO-BRUTALIST HIGH-VELOCITY LEDGER
+       Inspiration: Asset 01 (Audi Revolut F1) & Asset 08 (Creatiq)
+       Palette: Stark Ivory (#FAF9F6), Pitch Black (#000000), Acid Lime (#D4FF00)
+       Fonts: Syne Display + Space Mono
+       ========================================================================== */
+    .v4-root {
+      background-color: #FAF9F6;
+      color: #000000;
+      font-family: "Space Mono", monospace;
+      padding: 40px;
+      border: 3px solid #000000;
+      box-shadow: 8px 8px 0px #000000;
+    }
+
+    .v4-ticker {
+      background: #D4FF00;
+      color: #000000;
+      border: 2px solid #000000;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .v4-hero-block {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .v4-hero-box {
+      border: 2px solid #000000;
+      padding: 28px;
+      background: #FFFFFF;
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    .v4-title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(36px, 4.5vw, 54px);
+      font-weight: 800;
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .v4-badge-acid {
+      background: #D4FF00;
+      border: 1.5px solid #000000;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .v4-big-num {
+      font-family: "Syne", sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin: 8px 0;
+    }
+
+    .v4-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .v4-card {
+      border: 2px solid #000000;
+      background: #FFFFFF;
+      padding: 18px;
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    .v4-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .v4-card-val {
+      font-family: "Syne", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    /* Brutalist Ledger Matrix */
+    .v4-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #000000;
+      background: #FFFFFF;
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    .v4-matrix-table th {
+      background: #000000;
+      color: #D4FF00;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .v4-matrix-table td {
+      padding: 12px;
+      border-bottom: 1.5px solid #000000;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .v4-matrix-table tr:hover td {
+      background: #FAF28C;
+    }
+
+    .v4-matrix-table td.amt {
+      text-align: right;
+      font-family: "Syne", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       VERSION 5: LUMINESCENT NORDIC ALABASTER & PRECISION MODERN
+       Inspiration: Asset 09 (Ivory Clinic) & Asset 13 (Vaultiq)
+       Palette: Alabaster (#F8FAFC), Porcelain (#FFFFFF), Cerulean (#0284C7)
+       Fonts: Outfit + DM Sans
+       ========================================================================== */
+    .v5-root {
+      background-color: #F8FAFC;
+      color: #0F172A;
+      font-family: "Outfit", sans-serif;
+      padding: 44px;
+      border-radius: 16px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 30px rgba(15, 23, 42, 0.03);
+    }
+
+    .v5-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #EDF2F7;
+      margin-bottom: 32px;
+    }
+
+    .v5-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .v5-logo-mark {
+      width: 34px;
+      height: 34px;
+      background: #0F172A;
+      color: #FFFFFF;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.04em;
+    }
+
+    .v5-logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0F172A;
+      letter-spacing: -0.02em;
+    }
+
+    .v5-profile-capsule {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #475569;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Precision Cards Grid */
+    .v5-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .v5-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 6px 16px -4px rgba(15, 23, 42, 0.03);
+      transition: all 0.2s ease;
+    }
+
+    .v5-card:hover {
+      border-color: #CBD5E1;
+      box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06);
+    }
+
+    .v5-card-sublabel {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .v5-card-val {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0F172A;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .v5-card-meta {
+      font-size: 12px;
+      color: #0284C7;
+      font-weight: 500;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Split Section */
+    .v5-split {
+      display: grid;
+      grid-template-columns: 1.9fr 1.1fr;
+      gap: 24px;
+    }
+
+    .v5-surface-box {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+
+    .v5-box-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+
+    .v5-box-sub {
+      font-size: 12.5px;
+      color: #64748B;
+      margin-bottom: 18px;
+    }
+
+    .v5-clean-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    .v5-clean-table th {
+      color: #64748B;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 10px 8px;
+      border-bottom: 1px solid #E2E8F0;
+      text-align: left;
+    }
+
+    .v5-clean-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #1E293B;
+    }
+
+    .v5-clean-table td.amt {
+      text-align: right;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .v5-pill {
+      background: #F1F5F9;
+      color: #475569;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .v5-callout {
+      background: #F0F9FF;
+      border-left: 3px solid #0284C7;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #0C4A6E;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .v1-hero, .v1-metrics, .v1-split,
+      .v2-bays-grid, .v2-layout-matrix,
+      .v3-broadside-grid,
+      .v4-hero-block, .v4-grid-cards,
+      .v5-kpi-grid, .v5-split {
+        grid-template-columns: 1fr !important;
+      }
+      .v1-root, .v2-root, .v3-root, .v4-root, .v5-root {
+        padding: 24px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP CONTROLLER DOCK
+       ======================================================================== -->
+  <header id="showcase-dock">
+    <div class="dock-brand">
+      <span class="dock-logo-tag">Inspiration Library</span>
+      <span class="dock-title">Penny — 5 Light-Mode Architectural Directions</span>
+    </div>
+
+    <nav class="dock-nav" aria-label="Version Switcher">
+      <button class="dock-btn active" onclick="switchVersion('v1')">01. Scandinavian Minimal</button>
+      <button class="dock-btn" onclick="switchVersion('v2')">02. Industrial Hardware</button>
+      <button class="dock-btn" onclick="switchVersion('v3')">03. Heritage Gazette</button>
+      <button class="dock-btn" onclick="switchVersion('v4')">04. Neo-Brutalist</button>
+      <button class="dock-btn" onclick="switchVersion('v5')">05. Luminescent Modern</button>
+    </nav>
+
+    <div class="dock-actions">
+      <button class="dock-spec-btn" onclick="toggleAllView()">Compare All 5</button>
+      <button class="dock-spec-btn" onclick="toggleSpecBanner()">Design Tokens</button>
+    </div>
+  </header>
+
+  <!-- Design Spec Dropdown Drawer -->
+  <div id="spec-banner">
+    <div class="spec-grid">
+      <div class="spec-item">
+        <b>Active Framework</b>
+        <span id="spec-name">Scandinavian Minimal Architecture</span>
+      </div>
+      <div class="spec-item">
+        <b>Inspiration References</b>
+        <span id="spec-ref">Asset #07 (Nody) & Asset #05 (Clarimol)</span>
+      </div>
+      <div class="spec-item">
+        <b>Typography Pairings</b>
+        <span id="spec-font">Plus Jakarta Sans & Newsreader Editorial Italic</span>
+      </div>
+      <div class="spec-item">
+        <b>Harmonized Palette Tokens</b>
+        <div class="swatch-group" id="spec-swatches">
+          <span class="swatch" style="background: #F9F6F0;" title="#F9F6F0"></span>
+          <span class="swatch" style="background: #C25E3E;" title="#C25E3E"></span>
+          <span class="swatch" style="background: #1C1917;" title="#1C1917"></span>
+          <span class="swatch" style="background: #78716C;" title="#78716C"></span>
+        </div>
+      </div>
+      <div class="spec-item">
+        <b>Craft Floor Verification</b>
+        <span style="color:#68D391;">Zero Emojis · No Purple Gradients · High Contrast WCAG AAA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MASTER VIEWPORT CANVAS
+       ======================================================================== -->
+  <main class="viewport-canvas">
+
+    <!-- ----------------------------------------------------------------------
+         VERSION 1: ARCHITECTURAL & SCANDINAVIAN MINIMAL
+         Ref: Asset 07 Nody & Asset 05 Clarimol
+         ---------------------------------------------------------------------- -->
+    <section id="v1" class="design-version active">
+      <div class="version-divider-label">Design 01 — Architectural & Scandinavian Minimal</div>
+      <article class="v1-root">
+        <!-- Top Metadata Docket -->
+        <header class="v1-meta-bar">
+          <div class="v1-brand">PENNY ARCHIVE // FINANCIAL INSTRUMENT</div>
+          <div>TERM 2026-2027 · COMPUTER SCIENCE JUNIOR · DEMOGRAPHIC COHORT N=48</div>
+          <div>DISPATCH REF. 084-IND</div>
+        </header>
+
+        <!-- Asymmetric Editorial Hero -->
+        <div class="v1-hero">
+          <h1 class="v1-hero-title">
+            Autonomous living budget, calibrated for <em>deliberate scholarship</em>.
+          </h1>
+          <p class="v1-hero-summary">
+            A restrained computational ledger for university students. Penny estimates non-academic recurring subsistence and enforces an automatic 15% liquid buffer against monthly earnings.
+          </p>
+        </div>
+
+        <!-- 4 Asymmetrical Metrics -->
+        <div class="v1-metrics">
+          <div class="v1-metric-block">
+            <div class="v1-metric-label">Predicted Living Allowance</div>
+            <div class="v1-metric-value">₹24,800</div>
+            <div class="v1-metric-note">RandomForest regression · monthly recurring cap</div>
+          </div>
+          <div class="v1-metric-block">
+            <div class="v1-metric-label">Recorded Expenditure</div>
+            <div class="v1-metric-value">₹16,368</div>
+            <div class="v1-metric-note">66.0% utilization · 14 logged entries</div>
+          </div>
+          <div class="v1-metric-block">
+            <div class="v1-metric-label">Remaining Safe Runway</div>
+            <div class="v1-metric-value" style="color:#C25E3E;">₹8,432</div>
+            <div class="v1-metric-note">18 days remaining in current cycle</div>
+          </div>
+          <div class="v1-metric-block">
+            <div class="v1-metric-label">Daily Safe Velocity</div>
+            <div class="v1-metric-value">₹468</div>
+            <div class="v1-metric-note">Suggested diurnal ceiling</div>
+          </div>
+        </div>
+
+        <!-- Two Column Content Split -->
+        <div class="v1-split">
+          <div>
+            <div class="v1-section-header">
+              <h2 class="v1-section-title">Actual Expense Ledger</h2>
+              <span style="font-size:12px; color:#78716C;">Sorted Chronologically</span>
+            </div>
+            <table class="v1-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Classification</th>
+                  <th>Transaction Detail</th>
+                  <th style="text-align:right;">Disbursement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#78716C;">11 Nov 2026</td>
+                  <td><span class="v1-tag">Food</span></td>
+                  <td>Campus Canteen Lunch Meal</td>
+                  <td class="amount">₹240</td>
+                </tr>
+                <tr>
+                  <td style="color:#78716C;">10 Nov 2026</td>
+                  <td><span class="v1-tag">Transit</span></td>
+                  <td>Metro Rail Monthly Smartcard Pass</td>
+                  <td class="amount">₹600</td>
+                </tr>
+                <tr>
+                  <td style="color:#78716C;">08 Nov 2026</td>
+                  <td><span class="v1-tag">Academic</span></td>
+                  <td>Data Structures & Algorithms Course Textbook</td>
+                  <td class="amount">₹1,350</td>
+                </tr>
+                <tr>
+                  <td style="color:#78716C;">06 Nov 2026</td>
+                  <td><span class="v1-tag">Utilities</span></td>
+                  <td>Hostel Dedicated Fiber Internet Access</td>
+                  <td class="amount">₹799</td>
+                </tr>
+                <tr>
+                  <td style="color:#78716C;">04 Nov 2026</td>
+                  <td><span class="v1-tag">Hardware</span></td>
+                  <td>Logitech Ergonomic Optical Input Device</td>
+                  <td class="amount">₹1,850</td>
+                </tr>
+                <tr>
+                  <td style="color:#78716C;">02 Nov 2026</td>
+                  <td><span class="v1-tag">Health</span></td>
+                  <td>Prescription Flu & Vitamin Medications</td>
+                  <td class="amount">₹420</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <div class="v1-section-header">
+              <h2 class="v1-section-title">AI Advisory & Capital Milestones</h2>
+              <span style="font-size:12px; color:#78716C;">Telemetry Analysis</span>
+            </div>
+
+            <div class="v1-advice-card">
+              <p>
+                <strong>Affordability Guardrail Dispatch:</strong> Your projected living ceiling of ₹24,800 leaves ₹74,200 of your ₹99,000 monthly income uncommitted. Food delivery represents 34% of logged discretionary outlays. Reallocating ₹1,200 from weekend delivery accelerates your MacBook development rig target by 38 days.
+              </p>
+            </div>
+
+            <div class="v1-milestone">
+              <div class="v1-milestone-top">
+                <span>MacBook M3 Development Rig</span>
+                <span style="color:#C25E3E;">₹52,000 / ₹85,000</span>
+              </div>
+              <div class="v1-progress-bar">
+                <div class="v1-progress-fill" style="width: 61.2%;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#78716C;">
+                <span>61.2% Funded</span>
+                <span>5 Months Remaining</span>
+              </div>
+            </div>
+
+            <div class="v1-milestone">
+              <div class="v1-milestone-top">
+                <span>Semester Break Hackathon Expedition</span>
+                <span style="color:#C25E3E;">₹14,500 / ₹20,000</span>
+              </div>
+              <div class="v1-progress-bar">
+                <div class="v1-progress-fill" style="width: 72.5%;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#78716C;">
+                <span>72.5% Funded</span>
+                <span>2 Months Remaining</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VERSION 2: INDUSTRIAL HARDWARE & TECHNICAL SPEC SHEET
+         Ref: Asset 33 Steel Synkro & Asset 16 Framerate
+         ---------------------------------------------------------------------- -->
+    <section id="v2" class="design-version">
+      <div class="version-divider-label">Design 02 — Industrial Hardware & Technical Spec Sheet</div>
+      <article class="v2-root">
+        <!-- Technical Console Topbar -->
+        <div class="v2-header-console">
+          <div class="v2-console-id">
+            SYS_REF // <span>PENNY_HARDWARE_OS</span> · SPEC_REV: 4.12 · LOC: DEL_IN
+          </div>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div class="v2-status-pill">
+              <span class="v2-dot"></span>
+              RF_REGRESSOR: LOCKED [R2=0.22]
+            </div>
+            <div class="v2-status-pill">
+              AFFORDABILITY_GUARDRAIL: 85% CEILING
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Instrument Parameter Bays -->
+        <div class="v2-bays-grid">
+          <div class="v2-bay">
+            <div class="v2-bay-tag">SEC_01 // MONTHLY_LIVING_BENCHMARK</div>
+            <div class="v2-bay-value">₹24,800.00</div>
+            <div class="v2-bay-sub">PARAM: RECURRING_SUBSISTENCE</div>
+          </div>
+          <div class="v2-bay">
+            <div class="v2-bay-tag">SEC_02 // AGGREGATE_LOGGED_EXPENDITURE</div>
+            <div class="v2-bay-value">₹16,368.00</div>
+            <div class="v2-bay-sub">DELTA: 66.0% CYCLIC_LOAD</div>
+          </div>
+          <div class="v2-bay">
+            <div class="v2-bay-tag">SEC_03 // RESIDUAL_RUNWAY_MARGIN</div>
+            <div class="v2-bay-value" style="color:#FF5500;">₹8,432.00</div>
+            <div class="v2-bay-sub">WINDOW: 18_DAYS_ACTIVE</div>
+          </div>
+          <div class="v2-bay">
+            <div class="v2-bay-tag">SEC_04 // DIURNAL_VELOCITY_CAP</div>
+            <div class="v2-bay-value">₹468.44</div>
+            <div class="v2-bay-sub">RATE: INR_PER_24HR</div>
+          </div>
+        </div>
+
+        <!-- Modular Spec Console Split -->
+        <div class="v2-layout-matrix">
+          <div class="v2-panel">
+            <div class="v2-panel-title">
+              <span>TELEMETRY_RECORD // VERIFIED_TRANSACTIONS</span>
+              <span>SCHEMA: RFC-3339</span>
+            </div>
+            <table class="v2-data-table">
+              <thead>
+                <tr>
+                  <th>TIMESTAMP</th>
+                  <th>NODE</th>
+                  <th>IDENTIFIER</th>
+                  <th style="text-align:right;">VAL_INR</th>
+                  <th style="text-align:center;">STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026-11-11</td>
+                  <td><span class="v2-mono-badge">FOOD_01</span></td>
+                  <td>Campus Canteen Lunch Meal</td>
+                  <td style="text-align:right; font-weight:700;">₹240.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+                <tr>
+                  <td>2026-11-10</td>
+                  <td><span class="v2-mono-badge">TRN_04</span></td>
+                  <td>Metro Rail Monthly Pass Recharge</td>
+                  <td style="text-align:right; font-weight:700;">₹600.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+                <tr>
+                  <td>2026-11-08</td>
+                  <td><span class="v2-mono-badge">EDU_02</span></td>
+                  <td>Algorithms Textbook (Hardbound)</td>
+                  <td style="text-align:right; font-weight:700;">₹1,350.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+                <tr>
+                  <td>2026-11-06</td>
+                  <td><span class="v2-mono-badge">UTL_09</span></td>
+                  <td>Hostel Fiber Highspeed Bandwidth</td>
+                  <td style="text-align:right; font-weight:700;">₹799.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+                <tr>
+                  <td>2026-11-04</td>
+                  <td><span class="v2-mono-badge">TEC_05</span></td>
+                  <td>Logitech MX Master Peripheral</td>
+                  <td style="text-align:right; font-weight:700;">₹1,850.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+                <tr>
+                  <td>2026-11-02</td>
+                  <td><span class="v2-mono-badge">MED_03</span></td>
+                  <td>Pharmacy Prescription Compounding</td>
+                  <td style="text-align:right; font-weight:700;">₹420.00</td>
+                  <td style="text-align:center; color:#FF5500;">VERIFIED</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="v2-panel">
+            <div class="v2-panel-title">
+              <span>HARDWARE_CO-PILOT // DIAGNOSTICS</span>
+              <span>UNIT: CS_JR</span>
+            </div>
+
+            <div class="v2-param-row">
+              <span>DEMO_MAJOR:</span>
+              <span>Computer Science</span>
+            </div>
+            <div class="v2-param-row">
+              <span>ACADEMIC_YEAR:</span>
+              <span>Junior (Year 3)</span>
+            </div>
+            <div class="v2-param-row">
+              <span>MONTHLY_INCOME:</span>
+              <span>₹99,000.00</span>
+            </div>
+            <div class="v2-param-row">
+              <span>FINANCIAL_AID:</span>
+              <span>₹49,500.00</span>
+            </div>
+            <div class="v2-param-row">
+              <span>ACTIVE_GUARDRAIL:</span>
+              <span style="color:#FF5500;">85.0% OF_INCOME</span>
+            </div>
+
+            <div style="margin-top:20px; padding:12px; background:#DFE5DD; border:1px solid #C8CEC5; font-family:'JetBrains Mono',monospace; font-size:11.5px; line-height:1.5;">
+              <b style="color:#14181B;">CO-PILOT_ADVICE:</b> Discretionary consumption is operating within standard variance. 1 anomaly detected in cycle (Logitech peripheral > 2σ). Capital replenishment pacing is sufficient for primary targets.
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VERSION 3: BROADSIDE EDITORIAL & FINANCIAL GAZETTE
+         Ref: Asset 25 Global New Yorker & Asset 23 Lorenzo
+         ---------------------------------------------------------------------- -->
+    <section id="v3" class="design-version">
+      <div class="version-divider-label">Design 03 — Broadside Editorial & Financial Gazette</div>
+      <article class="v3-root">
+        <!-- Traditional Masthead Banner -->
+        <header class="v3-gazette-masthead">
+          <div class="v3-gazette-datebar">
+            <span>Vol. IV · No. 42</span>
+            <span>The Student Financial Chronicle & Treasury Record</span>
+            <span>Thursday, 12 November 2026</span>
+          </div>
+          <h1 class="v3-gazette-title">Penny Treasury Dispatch</h1>
+          <p class="v3-gazette-sub">A Journal of Academic Economics, Non-Discretionary Accounting & Prudent Student Living</p>
+        </header>
+
+        <!-- 3-Column Newspaper Grid -->
+        <div class="v3-broadside-grid">
+          <!-- Column 1: Editorial Commentary -->
+          <div class="v3-column">
+            <h2 class="v3-lead-hed">Living Benchmark Fixed at ₹24,800 Monthly</h2>
+            <p class="v3-body-p">
+              Following an algorithmic review of one thousand undergraduate profiles, the financial co-pilot has determined that a Junior Scholar of Computer Science requires twenty-four thousand eight hundred rupees for recurring living expenses.
+            </p>
+            <p class="v3-body-p">
+              This computation purposefully omits lumpy educational disbursements—such as tuition fees and semester hardware acquisitions—which do not represent regular monthly obligations.
+            </p>
+
+            <div class="v3-banner-stat">
+              <div class="num">₹8,432</div>
+              <div class="cap">Surplus Runway Remaining</div>
+            </div>
+
+            <p class="v3-body-p">
+              With eighteen solar days remaining in the current accounting cycle, the student is cautioned to restrict daily dining outlays to four hundred and sixty-eight rupees.
+            </p>
+          </div>
+
+          <!-- Column 2: The Official Bank Docket -->
+          <div class="v3-column">
+            <h2 class="v3-lead-hed" style="font-size:18px; text-transform:uppercase; letter-spacing:0.04em;">Official Ledger of Disbursements</h2>
+            <table class="v3-docket-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Classification</th>
+                  <th>Transaction Memo</th>
+                  <th style="text-align:right;">Disbursement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>11 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Dining</td>
+                  <td>Canteen Afternoon Luncheon</td>
+                  <td class="amt">₹240</td>
+                </tr>
+                <tr>
+                  <td>10 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Transit</td>
+                  <td>Metropolitan Rail Smartcard Recharge</td>
+                  <td class="amt">₹600</td>
+                </tr>
+                <tr>
+                  <td>08 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Academic</td>
+                  <td>Algorithms Reference Tome (2nd Ed)</td>
+                  <td class="amt">₹1,350</td>
+                </tr>
+                <tr>
+                  <td>06 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Utility</td>
+                  <td>Hostel Fiber High-Speed Internet</td>
+                  <td class="amt">₹799</td>
+                </tr>
+                <tr>
+                  <td>04 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Apparatus</td>
+                  <td>Ergonomic Input Peripheral</td>
+                  <td class="amt">₹1,850</td>
+                </tr>
+                <tr>
+                  <td>02 Nov</td>
+                  <td style="font-family:'DM Sans',sans-serif; font-size:11px; text-transform:uppercase;">Health</td>
+                  <td>Apothecary Prescription Medicines</td>
+                  <td class="amt">₹420</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="v3-signed-note">
+              "The eighty-five percent income ceiling remains inviolable. All supplemental earnings above the recommended allowance are redirected automatically toward the Scholar’s emergency liquidity reserve."
+            </div>
+          </div>
+
+          <!-- Column 3: Sinking Funds & Goals -->
+          <div class="v3-column">
+            <h2 class="v3-lead-hed">Sinking Funds & Capital Reserves</h2>
+            <p class="v3-body-p">
+              Progress reported upon the scholar’s active endowments and long-range hardware provisions:
+            </p>
+
+            <div style="border-bottom:1px solid #D6CEBF; padding:12px 0;">
+              <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px;">
+                <span>MacBook M3 Apparatus</span>
+                <span style="color:#7B1C28;">₹52,000 / ₹85,000</span>
+              </div>
+              <div style="font-size:11px; color:#635C50; margin-top:4px;">
+                61.2% Funded · Five Months to Target Date
+              </div>
+            </div>
+
+            <div style="border-bottom:1px solid #D6CEBF; padding:12px 0;">
+              <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px;">
+                <span>Hackathon Expedition</span>
+                <span style="color:#7B1C28;">₹14,500 / ₹20,000</span>
+              </div>
+              <div style="font-size:11px; color:#635C50; margin-top:4px;">
+                72.5% Funded · Two Months to Target Date
+              </div>
+            </div>
+
+            <div style="border-bottom:1px solid #D6CEBF; padding:12px 0;">
+              <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px;">
+                <span>Emergency Sinking Reserve</span>
+                <span style="color:#7B1C28;">₹18,000 / ₹30,000</span>
+              </div>
+              <div style="font-size:11px; color:#635C50; margin-top:4px;">
+                60.0% Funded · Permanent Protection
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VERSION 4: NEO-BRUTALIST HIGH-VELOCITY LEDGER
+         Ref: Asset 01 Audi Revolut & Asset 08 Creatiq
+         ---------------------------------------------------------------------- -->
+    <section id="v4" class="design-version">
+      <div class="version-divider-label">Design 04 — Neo-Brutalist High-Velocity Ledger</div>
+      <article class="v4-root">
+        <!-- Top Acid Hazard Ticker -->
+        <div class="v4-ticker">
+          <span>/// PENNY ENGINE V4.0</span>
+          <span>CAMPUS COHORT: CS_JUNIOR_2026</span>
+          <span>STATUS: AFFORDABLE [GUARDRAIL=ON]</span>
+          <span>INR_BASE_CURRENCY</span>
+        </div>
+
+        <!-- Heavy Brutalist Hero Block -->
+        <div class="v4-hero-block">
+          <div class="v4-hero-box">
+            <span class="v4-badge-acid">ALGORITHMIC BENCHMARK</span>
+            <h1 class="v4-title">LIVING BUDGET: ₹24,800/MO</h1>
+            <p style="font-size:13px; line-height:1.6; color:#222222;">
+              PREDICTED VIA 300 RANDOM FOREST REGRESSION TREES ACROSS 1,000 REAL STUDENT RECORDS. STRICTLY CAPPED AT 85% OF YOUR MONTHLY INCOME.
+            </p>
+          </div>
+
+          <div class="v4-hero-box" style="background:#D4FF00;">
+            <span class="v4-badge-acid" style="background:#000000; color:#D4FF00;">SAFE RUNWAY</span>
+            <div class="v4-big-num">₹8,432</div>
+            <div style="font-weight:700; font-size:13px;">18 DAYS ACTIVE IN CYCLE</div>
+            <div style="font-size:11px; margin-top:6px;">DAILY VELOCITY: ₹468 / 24HR</div>
+          </div>
+        </div>
+
+        <!-- 3 High Contrast Metric Cards -->
+        <div class="v4-grid-cards">
+          <div class="v4-card">
+            <div class="v4-card-label">TOTAL EARNINGS</div>
+            <div class="v4-card-val">₹99,000</div>
+            <div style="font-size:11px; color:#555555; margin-top:4px;">Stipend + Aid (₹49.5k)</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-label">RECORDED OUTFLOW</div>
+            <div class="v4-card-val">₹16,368</div>
+            <div style="font-size:11px; color:#555555; margin-top:4px;">66.0% of predicted target</div>
+          </div>
+          <div class="v4-card">
+            <div class="v4-card-label">UNCOMMITTED BUFFER</div>
+            <div class="v4-card-val">₹74,200</div>
+            <div style="font-size:11px; color:#555555; margin-top:4px;">Preserved for savings</div>
+          </div>
+        </div>
+
+        <!-- Hard Matrix Table -->
+        <table class="v4-matrix-table">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>SECTOR</th>
+              <th>TRANSACTION SPECIFICATION</th>
+              <th style="text-align:right;">DISBURSEMENT</th>
+              <th style="text-align:center;">VERIFICATION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-11-11</td>
+              <td>FOOD</td>
+              <td>Campus Canteen Lunch Meal</td>
+              <td class="amt">₹240</td>
+              <td style="text-align:center;">[CONF_99%]</td>
+            </tr>
+            <tr>
+              <td>2026-11-10</td>
+              <td>TRANSIT</td>
+              <td>Metro Rail Monthly Pass Recharge</td>
+              <td class="amt">₹600</td>
+              <td style="text-align:center;">[CONF_98%]</td>
+            </tr>
+            <tr>
+              <td>2026-11-08</td>
+              <td>EDUCATION</td>
+              <td>Algorithms Textbook Tome (2nd Ed)</td>
+              <td class="amt">₹1,350</td>
+              <td style="text-align:center;">[CONF_95%]</td>
+            </tr>
+            <tr>
+              <td>2026-11-06</td>
+              <td>UTILITIES</td>
+              <td>Hostel Dedicated Fiber Internet</td>
+              <td class="amt">₹799</td>
+              <td style="text-align:center;">[CONF_99%]</td>
+            </tr>
+            <tr>
+              <td>2026-11-04</td>
+              <td>HARDWARE</td>
+              <td>Logitech MX Master Peripheral</td>
+              <td class="amt">₹1,850</td>
+              <td style="text-align:center;">[CONF_99%]</td>
+            </tr>
+            <tr>
+              <td>2026-11-02</td>
+              <td>HEALTH</td>
+              <td>Pharmacy Cold & Vitamin Compounds</td>
+              <td class="amt">₹420</td>
+              <td style="text-align:center;">[CONF_96%]</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         VERSION 5: LUMINESCENT NORDIC ALABASTER & PRECISION MODERN
+         Ref: Asset 09 Ivory Clinic & Asset 13 Vaultiq
+         ---------------------------------------------------------------------- -->
+    <section id="v5" class="design-version">
+      <div class="version-divider-label">Design 05 — Luminescent Nordic Alabaster & Precision Modern</div>
+      <article class="v5-root">
+        <!-- Top Horizon Nav -->
+        <header class="v5-nav-header">
+          <div class="v5-logo-wrap">
+            <div class="v5-logo-mark">P</div>
+            <div class="v5-logo-text">Penny Intelligent Co-Pilot</div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span class="v5-profile-capsule">Computer Science Junior · Year 3</span>
+            <span class="v5-profile-capsule" style="background:#F0F9FF; color:#0284C7; border-color:#BAE6FD;">Guardrail Active (85%)</span>
+          </div>
+        </header>
+
+        <!-- 4 Horizon Cards -->
+        <div class="v5-kpi-grid">
+          <div class="v5-card">
+            <div class="v5-card-sublabel">Living Allowance Target</div>
+            <div class="v5-card-val">₹24,800</div>
+            <div class="v5-card-meta">Calculated by Random Forest</div>
+          </div>
+          <div class="v5-card">
+            <div class="v5-card-sublabel">Recorded This Cycle</div>
+            <div class="v5-card-val">₹16,368</div>
+            <div class="v5-card-meta" style="color:#059669;">66.0% utilization rate</div>
+          </div>
+          <div class="v5-card">
+            <div class="v5-card-sublabel">Safe Surplus Runway</div>
+            <div class="v5-card-val" style="color:#0284C7;">₹8,432</div>
+            <div class="v5-card-meta">18 days remaining</div>
+          </div>
+          <div class="v5-card">
+            <div class="v5-card-sublabel">Daily Spending Cap</div>
+            <div class="v5-card-val">₹468</div>
+            <div class="v5-card-meta">Safe diurnal ceiling</div>
+          </div>
+        </div>
+
+        <!-- Split Surface Area -->
+        <div class="v5-split">
+          <div class="v5-surface-box">
+            <h2 class="v5-box-title">Recent Expenditures & NLP Classification</h2>
+            <p class="v5-box-sub">Auto-categorized by dual word & character n-gram TF-IDF pipeline</p>
+
+            <table class="v5-clean-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Purchase Memo</th>
+                  <th style="text-align:right;">Disbursement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#64748B;">11 Nov 2026</td>
+                  <td><span class="v5-pill">Food & Dining</span></td>
+                  <td>Campus Canteen Lunch Meal</td>
+                  <td class="amt">₹240</td>
+                </tr>
+                <tr>
+                  <td style="color:#64748B;">10 Nov 2026</td>
+                  <td><span class="v5-pill">Transit</span></td>
+                  <td>Metro Rail Monthly Pass Recharge</td>
+                  <td class="amt">₹600</td>
+                </tr>
+                <tr>
+                  <td style="color:#64748B;">08 Nov 2026</td>
+                  <td><span class="v5-pill">Education</span></td>
+                  <td>Algorithms Reference Textbook</td>
+                  <td class="amt">₹1,350</td>
+                </tr>
+                <tr>
+                  <td style="color:#64748B;">06 Nov 2026</td>
+                  <td><span class="v5-pill">Utilities</span></td>
+                  <td>Hostel Fiber High-Speed Internet</td>
+                  <td class="amt">₹799</td>
+                </tr>
+                <tr>
+                  <td style="color:#64748B;">04 Nov 2026</td>
+                  <td><span class="v5-pill">Technology</span></td>
+                  <td>Logitech Ergonomic Mouse Peripheral</td>
+                  <td class="amt">₹1,850</td>
+                </tr>
+                <tr>
+                  <td style="color:#64748B;">02 Nov 2026</td>
+                  <td><span class="v5-pill">Healthcare</span></td>
+                  <td>Pharmacy Prescription Compound</td>
+                  <td class="amt">₹420</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="v5-surface-box">
+            <h2 class="v5-box-title">Autonomous Financial Advice</h2>
+            <p class="v5-box-sub">Derived from demographic cohort benchmarks</p>
+
+            <div class="v5-callout">
+              <b>Cashflow Health:</b> You are tracking comfortably beneath your ₹24,800 living benchmark. Reallocating ₹1,200 from discretionary weekend dining toward the MacBook M3 milestone shortens your goal horizon by over one month.
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:600; margin-bottom:6px;">
+                <span>MacBook M3 Development Rig</span>
+                <span style="color:#0284C7;">₹52,000 / ₹85,000</span>
+              </div>
+              <div style="height:6px; background:#EDF2F7; border-radius:999px; overflow:hidden;">
+                <div style="width:61.2%; height:100%; background:#0284C7; border-radius:999px;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#64748B; margin-top:4px;">
+                <span>61.2% Funded</span>
+                <span>5 Months Remaining</span>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:600; margin-bottom:6px;">
+                <span>Hackathon Expedition Reserve</span>
+                <span style="color:#0284C7;">₹14,500 / ₹20,000</span>
+              </div>
+              <div style="height:6px; background:#EDF2F7; border-radius:999px; overflow:hidden;">
+                <div style="width:72.5%; height:100%; background:#0284C7; border-radius:999px;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#64748B; margin-top:4px;">
+                <span>72.5% Funded</span>
+                <span>2 Months Remaining</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       CLIENT CONTROLLER JAVASCRIPT
+       ======================================================================== -->
+  <script>
+    const SPEC_DATA = {
+      v1: {
+        name: "Architectural & Scandinavian Minimal",
+        ref: "Asset #07 (Nody Architectural) & Asset #05 (Clarimol Biotech)",
+        font: "Plus Jakarta Sans (600/700) & Newsreader Serif (Italic)",
+        swatches: ["#F9F6F0", "#C25E3E", "#1C1917", "#78716C", "#EBE5DA"]
+      },
+      v2: {
+        name: "Industrial Hardware & Technical Spec Sheet",
+        ref: "Asset #33 (Steel Synkro Groovebox) & Asset #16 (Framerate)",
+        font: "Space Grotesk (700) & JetBrains Mono (500/700)",
+        swatches: ["#ECEEEB", "#FF5500", "#14181B", "#5A6460", "#C8CEC5"]
+      },
+      v3: {
+        name: "Broadside Editorial & Financial Gazette",
+        ref: "Asset #25 (Global New Yorker) & Asset #23 (Lorenzo Hotel)",
+        font: "Playfair Display (700) & Source Serif 4 (400/600)",
+        swatches: ["#F6F3EC", "#7B1C28", "#121210", "#555047", "#DFD9CE"]
+      },
+      v4: {
+        name: "Neo-Brutalist High-Velocity Ledger",
+        ref: "Asset #01 (Audi Revolut F1) & Asset #08 (Creatiq Engine)",
+        font: "Syne Display (800) & Space Mono (700)",
+        swatches: ["#FAF9F6", "#D4FF00", "#000000", "#444444", "#FFFFFF"]
+      },
+      v5: {
+        name: "Luminescent Nordic Alabaster & Precision Modern",
+        ref: "Asset #09 (Ivory Clinic) & Asset #13 (Vaultiq OS)",
+        font: "Outfit (600/700) & DM Sans (500/600)",
+        swatches: ["#F8FAFC", "#0284C7", "#0F172A", "#64748B", "#E2E8F0"]
+      }
+    };
+
+    let activeVersion = 'v1';
+
+    function switchVersion(versionId) {
+      document.body.classList.remove('show-all-mode');
+      activeVersion = versionId;
+
+      // Update button active state
+      document.querySelectorAll('.dock-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(versionId)) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Update active section
+      document.querySelectorAll('.design-version').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      const target = document.getElementById(versionId);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      // Update Design Spec Banner details
+      updateSpecDetails(versionId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleAllView() {
+      document.body.classList.toggle('show-all-mode');
+      const isAll = document.body.classList.contains('show-all-mode');
+      if (isAll) {
+        document.querySelectorAll('.dock-btn').forEach(btn => btn.classList.remove('active'));
+      } else {
+        switchVersion(activeVersion);
+      }
+    }
+
+    function toggleSpecBanner() {
+      const banner = document.getElementById('spec-banner');
+      banner.classList.toggle('visible');
+    }
+
+    function updateSpecDetails(vId) {
+      const data = SPEC_DATA[vId];
+      if (!data) return;
+
+      document.getElementById('spec-name').textContent = data.name;
+      document.getElementById('spec-ref').textContent = data.ref;
+      document.getElementById('spec-font').textContent = data.font;
+
+      const swatchesBox = document.getElementById('spec-swatches');
+      swatchesBox.innerHTML = '';
+      data.swatches.forEach(hex => {
+        const span = document.createElement('span');
+        span.className = 'swatch';
+        span.style.background = hex;
+        span.title = hex;
+        swatchesBox.appendChild(span);
+      });
+    }
+
+    // Keyboard navigation (1 to 5 for quick switching)
+    window.addEventListener('keydown', (e) => {
+      if (e.key >= '1' && e.key <= '5') {
+        const vKey = 'v' + e.key;
+        switchVersion(vKey);
+      } else if (e.key === 'a' || e.key === 'A') {
+        toggleAllView();
+      } else if (e.key === 't' || e.key === 'T') {
+        toggleSpecBanner();
+      }
+    });
+
+    // Initialize with V1 specs
+    updateSpecDetails('v1');
+  </script>
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penny — Intelligent Student Living Subsistence Co-Pilot</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- MASTER LAYOUT: HORIZON COMMAND SPLIT -->
+  <div class="app-layout">
+
+    <!-- ----------------------------------------------------------------------
+         LEFT LATERAL COMMAND RAIL
+         ---------------------------------------------------------------------- -->
+    <aside class="command-rail">
+      <!-- Brand Header -->
+      <div class="rail-brand">
+        <div class="brand-badge">P</div>
+        <div>
+          <div class="brand-title">Penny</div>
+          <div class="brand-sub">Living Subsistence Co-Pilot</div>
+        </div>
+      </div>
+
+      <!-- Student Profile Identity Capsule -->
+      <div class="profile-capsule">
+        <div class="profile-top">
+          <div class="avatar-initials" id="rail-avatar">AS</div>
+          <div style="overflow:hidden;">
+            <div class="profile-name" id="rail-name">Ananya Sharma</div>
+            <div class="profile-sub" id="rail-major">Junior · Computer Science</div>
+          </div>
+        </div>
+        <div class="profile-rule-bar">
+          <span style="font-size:11.5px; color:var(--text-muted); font-weight:600;">Affordability Rule</span>
+          <span class="pill pill-blue">85% Income Cap</span>
+        </div>
+        <button class="btn-secondary" style="width:100%; justify-content:center; margin-top:10px; font-size:12px; padding:6px 10px;" onclick="openProfileModal()">
+          Edit Student Details
+        </button>
+      </div>
+
+      <!-- Demographic Telemetry Mini Grid -->
+      <div class="demographic-grid">
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">Monthly Income</div>
+          <div class="demo-stat-val" id="rail-income">₹99,000</div>
+        </div>
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">Financial Aid</div>
+          <div class="demo-stat-val" id="rail-aid">₹49,500</div>
+        </div>
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">Payment Method</div>
+          <div class="demo-stat-val" id="rail-payment">Credit Card</div>
+        </div>
+        <div class="demo-stat-box">
+          <div class="demo-stat-label">Cohort Peers</div>
+          <div class="demo-stat-val" id="rail-cohort">n = 48 peers</div>
+        </div>
+      </div>
+
+      <!-- AI Predicted Living Budget Benchmark in Rail -->
+      <div class="lumi-box" style="background:linear-gradient(145deg, #FFFFFF 0%, #F0F9FF 100%); border-color:var(--blue-border); padding:16px;">
+        <div class="kpi-label" style="color:var(--blue-deep);">AI MONTHLY LIVING BUDGET</div>
+        <div class="kpi-num" style="font-size:26px; color:var(--blue-primary); margin:2px 0;" id="rail-budget">₹24,800</div>
+        <div style="font-size:11.5px; color:var(--text-muted);">Calibrated via Random Forest over 1,000 student records.</div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="rail-nav">
+        <button class="nav-item active" data-view="overview" onclick="switchView('overview', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Executive Overview</span>
+        </button>
+        <button class="nav-item" data-view="expenses" onclick="switchView('expenses', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Transaction Ledger</span>
+        </button>
+        <button class="nav-item" data-view="goals" onclick="switchView('goals', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Savings Milestones</span>
+        </button>
+        <button class="nav-item" data-view="analytics" onclick="switchView('analytics', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Peer Benchmarks</span>
+        </button>
+        <button class="nav-item" data-view="studio" onclick="switchView('studio', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>Model Diagnostics</span>
+        </button>
+      </nav>
+
+      <!-- Co-Pilot Advice Widget in Rail -->
+      <div class="rail-advice-card">
+        <div class="rail-advice-title">Autonomous Insight</div>
+        <p class="rail-advice-p">
+          Food delivery represents 33.1% of logged outlays. Reallocating ₹1,200 from weekend delivery accelerates your MacBook M3 milestone by 38 days.
+        </p>
+      </div>
+    </aside>
+
+    <!-- ----------------------------------------------------------------------
+         RIGHT HORIZON CANVAS
+         ---------------------------------------------------------------------- -->
+    <main class="horizon-canvas">
+
+      <!-- ====================================================================
+           VIEW 1: EXECUTIVE OVERVIEW
+           ==================================================================== -->
+      <section id="view-overview" class="view-panel">
+        <div class="canvas-header">
+          <div>
+            <h1 class="view-title">Executive Living Overview</h1>
+            <p class="view-sub">Autonomous telemetry comparing verified outlays against your monthly living budget</p>
+          </div>
+          <button class="btn-primary btn-orange" onclick="openQuickModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Log Disbursement</span>
+          </button>
+        </div>
+
+        <!-- 4 Horizon KPI Cards -->
+        <div class="kpi-row">
+          <div class="kpi-card card-blue">
+            <div class="kpi-label" style="color:var(--blue-deep);">AI MONTHLY BENCHMARK</div>
+            <div class="kpi-num" style="color:var(--blue-primary);" id="kpi-budget">₹24,800</div>
+            <div class="kpi-footer">
+              <span class="pill pill-blue">Random Forest</span>
+              <span>Living ceiling</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">LOGGED THIS MONTH</div>
+            <div class="kpi-num" id="kpi-spent">₹16,368</div>
+            <div class="kpi-footer">
+              <span style="color:#059669; font-weight:600;" id="kpi-count">10 entries</span>
+              <span id="kpi-total-all">(₹16,368 all-time)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card card-orange">
+            <div class="kpi-label" style="color:var(--orange-primary);">REMAINING SAFE RUNWAY</div>
+            <div class="kpi-num" style="color:var(--orange-primary);" id="kpi-runway">₹8,432</div>
+            <div class="kpi-footer">
+              <span class="pill pill-emerald" id="kpi-status-pill">On Track</span>
+              <span id="kpi-days-left">18 days left</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">SAFE DAILY VELOCITY</div>
+            <div class="kpi-num" id="kpi-velocity">₹468</div>
+            <div class="kpi-footer">
+              <span>Safe 24-hr spending cap</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Runway Gauge Card -->
+        <div class="runway-gauge-card">
+          <div class="gauge-meta-row">
+            <span>Monthly Budget Utilization: <b id="gauge-pct" style="color:var(--blue-primary);">66.0%</b></span>
+            <span style="color:var(--text-muted);" id="gauge-detail">₹16,368 of ₹24,800 allocated</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="gauge-bar" style="width: 66%;"></div>
+          </div>
+        </div>
+
+        <!-- Mid Split: Spending Timeline & Category Allocation -->
+        <div class="split-canvas">
+          <div class="lumi-box">
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <div>
+                <h2 class="box-title">Spending Velocity vs. Target Budget</h2>
+                <p class="box-sub">Daily actual expenditures plotted chronologically</p>
+              </div>
+              <span class="pill pill-blue">November 2026</span>
+            </div>
+            
+            <div id="svg-trend-chart" class="svg-chart-wrap">
+              <!-- Rendered via JS SVG -->
+            </div>
+          </div>
+
+          <div class="lumi-box">
+            <h2 class="box-title">Category Allocation Matrix</h2>
+            <p class="box-sub">Verified disbursement proportions</p>
+            
+            <div id="svg-donut-chart" style="display:flex; align-items:center; justify-content:center; height:200px; position:relative;">
+              <!-- Rendered via JS SVG -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Autonomous AI Observations Banner -->
+        <div class="lumi-box" style="margin-bottom:22px;">
+          <h2 class="box-title" style="font-size:15px; margin-bottom:10px;">Autonomous AI Co-Pilot Observations</h2>
+          <div id="ai-observations-container">
+            <!-- Dynamic advice boxes inserted via JS -->
+          </div>
+        </div>
+
+        <!-- Recent Transactions Ledger Stream -->
+        <div class="lumi-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h2 class="box-title">Recent Disbursements</h2>
+            <button class="btn-secondary" style="font-size:12px; padding:5px 10px;" onclick="switchView('expenses')">
+              View Full Ledger &rarr;
+            </button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Classification</th>
+                <th>Transaction Memo</th>
+                <th style="text-align:right;">Disbursement</th>
+              </tr>
+            </thead>
+            <tbody id="overview-recent-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 2: TRANSACTION LEDGER & SMART NLP
+           ==================================================================== -->
+      <section id="view-expenses" class="view-panel" style="display:none;">
+        <div class="canvas-header">
+          <div>
+            <h1 class="view-title">Transaction Ledger & NLP Categorizer</h1>
+            <p class="view-sub">Active memory pipeline auto-classifies purchases and learns permanently from user corrections</p>
+          </div>
+        </div>
+
+        <!-- Quick Add Expense Form Card -->
+        <div class="lumi-box" style="margin-bottom:20px;">
+          <h2 class="box-title" style="font-size:15px; margin-bottom:12px;">Log Actual Disbursement</h2>
+          <div style="display:grid; grid-template-columns:2.5fr 1.2fr 1.2fr auto; gap:12px; align-items:end;">
+            <div>
+              <label class="form-label">Purchase Description</label>
+              <input type="text" id="inline-desc" class="form-input" placeholder="e.g. Swiggy Biryani Dinner, Metro Smartcard Recharge" oninput="handleInlinePredict(this.value)">
+            </div>
+            <div>
+              <label class="form-label">Amount (INR)</label>
+              <input type="number" id="inline-amt" class="form-input" value="240" min="1" step="50">
+            </div>
+            <div>
+              <label class="form-label">Date</label>
+              <input type="date" id="inline-date" class="form-input">
+            </div>
+            <div>
+              <button class="btn-primary btn-orange" style="height:41px;" onclick="handleInlineSubmit()">
+                Predict & Add
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time NLP Preview Card -->
+          <div id="inline-nlp-preview" style="display:none; background:#F0F9FF; border:1px solid #BAE6FD; border-radius:10px; padding:12px 16px; margin-top:14px; justify-content:space-between; align-items:center;">
+            <div>
+              <span style="font-size:10.5px; font-weight:700; color:#0369A1; text-transform:uppercase;">Predicted Classification</span>
+              <div style="font-size:15px; font-weight:700; color:#0F172A;" id="inline-pred-cat">Food & Dining</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="pill pill-blue" id="inline-pred-conf">98% Confidence</span>
+              <button class="btn-secondary" style="font-size:11.5px; padding:4px 10px;" onclick="toggleInlineTeach()">Correct Category</button>
+            </div>
+          </div>
+
+          <!-- Teach AI Drawer -->
+          <div id="inline-teach-drawer" style="display:none; margin-top:12px; padding:12px; background:var(--bg-subtle); border-radius:8px; border:1px solid var(--border-subtle);">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Select True Category:</span>
+              <select id="inline-teach-select" class="form-select" style="max-width:220px; padding:6px 10px; font-size:12.5px;">
+                <!-- Populated via JS -->
+              </select>
+              <button class="btn-primary" style="font-size:12px; padding:6px 12px;" onclick="handleInlineTeach()">
+                Teach AI & Retrain
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ledger Table Controls -->
+        <div class="lumi-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h2 class="box-title">Verified Disbursements</h2>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-secondary" style="font-size:12px;" onclick="exportLedgerCsv()">Export CSV</button>
+              <button class="btn-secondary" style="font-size:12px;" onclick="resetLedgerDemo()">Reload Demo</button>
+              <button class="btn-secondary" style="font-size:12px; color:#DC2626;" onclick="clearLedger()">Clear</button>
+            </div>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="filter-chip-row" id="ledger-filter-chips">
+            <button class="chip active" onclick="filterLedger('all', this)">All Sectors</button>
+            <button class="chip" onclick="filterLedger('food', this)">Food</button>
+            <button class="chip" onclick="filterLedger('travel', this)">Travel</button>
+            <button class="chip" onclick="filterLedger('education', this)">Education</button>
+            <button class="chip" onclick="filterLedger('technology', this)">Technology</button>
+            <button class="chip" onclick="filterLedger('utilities', this)">Utilities</button>
+            <button class="chip" onclick="filterLedger('healthcare', this)">Healthcare</button>
+            <button class="chip" onclick="filterLedger('entertainment', this)">Entertainment</button>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Classification</th>
+                <th>Purchase Description</th>
+                <th style="text-align:right;">Disbursement</th>
+                <th style="text-align:center;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 3: SAVINGS MILESTONES & SINKING FUNDS
+           ==================================================================== -->
+      <section id="view-goals" class="view-panel" style="display:none;">
+        <div class="canvas-header">
+          <div>
+            <h1 class="view-title">Sinking Funds & Savings Milestones</h1>
+            <p class="view-sub">Reserve capital for hardware, project hackathons, or emergency liquidity</p>
+          </div>
+          <button class="btn-primary" onclick="openNewGoalModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Register Milestone</span>
+          </button>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card card-blue">
+            <div class="kpi-label" style="color:var(--blue-deep);">TOTAL MILESTONE TARGETS</div>
+            <div class="kpi-num" style="color:var(--blue-primary);" id="goals-total-target">₹105,000</div>
+            <div class="kpi-footer"><span id="goals-active-count">Across 3 active milestones</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">FUNDED TO DATE</div>
+            <div class="kpi-num" style="color:#059669;" id="goals-total-saved">₹66,500</div>
+            <div class="kpi-footer"><span id="goals-overall-pct">63.3% funded overall</span></div>
+          </div>
+          <div class="kpi-card card-orange">
+            <div class="kpi-label" style="color:var(--orange-primary);">REMAINING CAPITAL GAP</div>
+            <div class="kpi-num" style="color:var(--orange-primary);" id="goals-total-gap">₹38,500</div>
+            <div class="kpi-footer"><span>Needed to achieve targets</span></div>
+          </div>
+        </div>
+
+        <div id="goals-cards-container" style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 4: PEER BENCHMARKS & COHORT ANALYTICS
+           ==================================================================== -->
+      <section id="view-analytics" class="view-panel" style="display:none;">
+        <div class="canvas-header">
+          <div>
+            <h1 class="view-title">Demographic Benchmarking & Cohort Telemetry</h1>
+            <p class="view-sub">Calibrated against verified student profiles from the university demographic dataset</p>
+          </div>
+        </div>
+
+        <div class="lumi-box" style="margin-bottom:20px;">
+          <h2 class="box-title" id="bench-header-title">Spending Comparison: You vs. Cohort Peers</h2>
+          <p class="box-sub" id="bench-header-sub">Computed over similar majors and academic years</p>
+          
+          <div id="svg-bench-chart" class="svg-chart-wrap" style="height:240px;">
+            <!-- Rendered via JS SVG -->
+          </div>
+        </div>
+
+        <div class="split-canvas">
+          <div class="lumi-box">
+            <h2 class="box-title">Statistical Outlier Detector</h2>
+            <p class="box-sub">Disbursements exceeding mean + 2σ standard deviation</p>
+            <div id="outliers-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="lumi-box">
+            <h2 class="box-title">Discretionary Savings Simulator</h2>
+            <p class="box-sub">Simulate adjustments to food, shopping & entertainment</p>
+
+            <div style="margin:16px 0;">
+              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:8px;">
+                <span>Discretionary Reduction: <b id="sim-pct-lbl" style="color:var(--blue-primary);">20%</b></span>
+                <span id="sim-monthly-val" style="color:var(--blue-primary); font-size:15px;">₹1,760 / mo</span>
+              </div>
+              <input type="range" id="sim-slider" min="5" max="50" value="20" step="5" style="width:100%; accent-color:var(--blue-primary);" oninput="handleSimSlider(this.value)">
+            </div>
+
+            <div style="background:var(--bg-subtle); padding:14px; border-radius:10px; margin-top:14px;">
+              <div style="font-size:11.5px; color:var(--text-muted); text-transform:uppercase; font-weight:700;">Compounded Annual Reserve</div>
+              <div style="font-size:24px; font-weight:800; color:#059669; margin:4px 0;" id="sim-annual-val">₹21,120 / yr</div>
+              <div style="font-size:12px; color:var(--text-muted);">Redirecting these non-essential funds fully funds your hardware sinking targets.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 5: MACHINE LEARNING DIAGNOSTIC STUDIO
+           ==================================================================== -->
+      <section id="view-studio" class="view-panel" style="display:none;">
+        <div class="canvas-header">
+          <div>
+            <h1 class="view-title">Machine Learning Diagnostic Studio</h1>
+            <p class="view-sub">Real-time telemetry for the dual predictive algorithms executing on Penny</p>
+          </div>
+        </div>
+
+        <div class="split-canvas">
+          <div class="lumi-box lumi-card-blue">
+            <h2 class="box-title" style="color:var(--blue-deep);">Model 1: Budget Regressor (Random Forest)</h2>
+            <p class="box-sub">Predicts recurring living subsistence from student demographics</p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+              <div class="demo-stat-box" style="background:#FFFFFF;">
+                <div class="demo-stat-label">R² Precision Score</div>
+                <div class="demo-stat-val" style="color:#059669; font-size:22px;">0.22</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Calibrated cross-validation</div>
+              </div>
+              <div class="demo-stat-box" style="background:#FFFFFF;">
+                <div class="demo-stat-label">Mean Absolute Error</div>
+                <div class="demo-stat-val" style="color:var(--blue-primary); font-size:22px;">₹8,340</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">INR normalized variance</div>
+              </div>
+            </div>
+
+            <div class="advice-callout" style="background:#FFFFFF; border-left-color:var(--blue-primary);">
+              <b>85% Affordability Guardrail:</b> Regardless of regression output, the recommended monthly living allowance is hard-capped at <b>85% of monthly income</b> to guarantee a persistent 15% liquid buffer for emergency student contingencies.
+            </div>
+          </div>
+
+          <div class="lumi-box">
+            <h2 class="box-title">Model 2: Expense Classifier (MultinomialNB)</h2>
+            <p class="box-sub">Word (1-2) + Character (3-5) n-gram TF-IDF pipeline with priority memory store</p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+              <div class="demo-stat-box">
+                <div class="demo-stat-label">Validation Accuracy</div>
+                <div class="demo-stat-val" style="color:#059669; font-size:22px;">99.01%</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">F1 Weighted: 0.988</div>
+              </div>
+              <div class="demo-stat-box">
+                <div class="demo-stat-label">Learned Active Rules</div>
+                <div class="demo-stat-val" style="color:var(--blue-primary); font-size:22px;" id="studio-rules-count">14 Rules</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Persistent user corrections</div>
+              </div>
+            </div>
+
+            <!-- Interactive NLP Test Scratchpad -->
+            <div style="margin-top:16px;">
+              <label class="form-label">Interactive Classifier Scratchpad</label>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="scratch-input" class="form-input" value="Campus bookstore notebook" oninput="runScratchpadNLP(this.value)">
+              </div>
+              <div id="scratch-result-box" style="background:var(--bg-subtle); border-radius:8px; padding:10px 14px; margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span id="scratch-cat-lbl" style="font-weight:700;">Education & Books</span>
+                <span class="pill pill-blue" id="scratch-conf-lbl">98.4% Match</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1: FIRST-RUN PERSISTENT ONBOARDING QUESTIONNAIRE
+       ======================================================================== -->
+  <div id="onboarding-modal-backdrop" class="modal-backdrop"></div>
+  <div id="onboarding-modal" class="modal-dialog" style="position:relative;">
+    <button id="ob-close-btn" type="button" style="position:absolute; top:18px; right:18px; background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:22px; line-height:1; display:none;" onclick="closeProfileModal()">&times;</button>
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="width:44px; height:44px; background:var(--blue-primary); color:#FFFFFF; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:20px; margin-bottom:10px;">P</div>
+      <h2 style="font-size:22px; font-weight:800; color:var(--text-main);" id="ob-modal-title">Welcome to Penny</h2>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:4px;" id="ob-modal-sub">
+        Configure your actual student financial parameters. This is saved permanently and will not be asked again.
+      </p>
+    </div>
+
+    <form onsubmit="handleProfileSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="ob-name" class="form-input" placeholder="e.g. Ananya Sharma" required>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Degree Course / Major</label>
+          <select id="ob-major" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Academic Year</label>
+          <select id="ob-year" class="form-select"></select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input type="number" id="ob-age" class="form-input" value="22" min="17" max="30" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select id="ob-gender" class="form-select"></select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Monthly Income / Stipend (INR)</label>
+          <input type="number" id="ob-income" class="form-input" value="90000" min="0" step="1000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Financial Aid / Grants (INR)</label>
+          <input type="number" id="ob-aid" class="form-input" value="45000" min="0" step="1000" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Preferred Payment Method</label>
+        <select id="ob-payment" class="form-select"></select>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button id="ob-cancel-btn" type="button" class="btn-secondary" style="flex:1; justify-content:center; display:none;" onclick="closeProfileModal()">Cancel</button>
+        <button type="submit" class="btn-primary" style="flex:2; justify-content:center;" id="ob-submit-btn">Save Profile & Launch Co-Pilot</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: QUICK ADD DISBURSEMENT
+       ======================================================================== -->
+  <div id="quick-modal-backdrop" class="modal-backdrop"></div>
+  <div id="quick-modal" class="modal-dialog" style="max-width:480px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2 style="font-size:18px; font-weight:800; color:var(--text-main);">Log Actual Disbursement</h2>
+      <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:20px;" onclick="closeQuickModal()">&times;</button>
+    </div>
+
+    <form onsubmit="handleQuickModalSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Purchase Description</label>
+        <input type="text" id="qm-desc" class="form-input" placeholder="e.g. Swiggy Lunch, Metro Card Recharge" required oninput="handleModalPredict(this.value)">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Amount (INR)</label>
+          <input type="number" id="qm-amt" class="form-input" value="350" min="1" step="50" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="qm-date" class="form-input" required>
+        </div>
+      </div>
+
+      <div id="qm-pred-box" style="background:#F0F9FF; border:1px solid #BAE6FD; border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div>
+          <span style="font-size:10px; font-weight:700; color:#0369A1; text-transform:uppercase;">Auto-Detected Sector</span>
+          <div style="font-weight:700; font-size:14px; color:#0F172A;" id="qm-cat-name">Food & Dining</div>
+        </div>
+        <span class="pill pill-blue" id="qm-cat-conf">98% Match</span>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn-secondary" style="flex:1; justify-content:center;" onclick="closeQuickModal()">Cancel</button>
+        <button type="submit" class="btn-primary btn-orange" style="flex:2; justify-content:center;">Record Outlay</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: REGISTER NEW SAVINGS MILESTONE
+       ======================================================================== -->
+  <div id="goal-modal-backdrop" class="modal-backdrop"></div>
+  <div id="goal-modal" class="modal-dialog" style="max-width:480px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2 style="font-size:18px; font-weight:800; color:var(--text-main);">Register Savings Milestone</h2>
+      <button style="background:transparent; border:none; color:var(--text-dim); cursor:pointer; font-size:20px;" onclick="closeGoalModal()">&times;</button>
+    </div>
+
+    <form onsubmit="handleNewGoalSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Milestone Name</label>
+        <input type="text" id="gm-name" class="form-input" placeholder="e.g. MacBook M3 Apparatus, Hackathon Trip" required>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Target Amount (INR)</label>
+          <input type="number" id="gm-target" class="form-input" value="30000" min="500" step="500" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Already Funded (INR)</label>
+          <input type="number" id="gm-saved" class="form-input" value="5000" min="0" step="500" required>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Target Deadline</label>
+          <input type="date" id="gm-deadline" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority Level</label>
+          <select id="gm-priority" class="form-select">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button type="button" class="btn-secondary" style="flex:1; justify-content:center;" onclick="closeGoalModal()">Cancel</button>
+        <button type="submit" class="btn-primary" style="flex:2; justify-content:center;">Register Target</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="toast">Notification text</div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

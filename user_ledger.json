@@ -1,0 +1,79 @@
+[
+  {
+    "description": "uber",
+    "amount": 240,
+    "date": "2026-11-12",
+    "category": "travel",
+    "id": 1794485065270
+  },
+  {
+    "id": 1,
+    "date": "2026-11-11",
+    "description": "Campus Canteen Lunch Meal",
+    "category": "food",
+    "amount": 240
+  },
+  {
+    "id": 2,
+    "date": "2026-11-10",
+    "description": "Metro Rail Monthly Pass Recharge",
+    "category": "travel",
+    "amount": 600
+  },
+  {
+    "id": 3,
+    "date": "2026-11-08",
+    "description": "Algorithms Reference Textbook (2nd Ed)",
+    "category": "education",
+    "amount": 1350
+  },
+  {
+    "id": 4,
+    "date": "2026-11-06",
+    "description": "Hostel Dedicated Fiber Internet",
+    "category": "utilities",
+    "amount": 799
+  },
+  {
+    "id": 5,
+    "date": "2026-11-04",
+    "description": "Logitech MX Master Optical Peripheral",
+    "category": "technology",
+    "amount": 1850
+  },
+  {
+    "id": 6,
+    "date": "2026-11-02",
+    "description": "Prescription Flu & Vitamin Medications",
+    "category": "healthcare",
+    "amount": 420
+  },
+  {
+    "id": 7,
+    "date": "2026-10-30",
+    "description": "Weekend Roommates Dinner Outing",
+    "category": "food",
+    "amount": 780
+  },
+  {
+    "id": 8,
+    "date": "2026-10-27",
+    "description": "Index Fund Monthly SIP",
+    "category": "investment",
+    "amount": 2000
+  },
+  {
+    "id": 9,
+    "date": "2026-10-24",
+    "description": "Laptop Equipment EMI Payment",
+    "category": "emi",
+    "amount": 3200
+  },
+  {
+    "id": 10,
+    "date": "2026-10-21",
+    "description": "Weekly Grocery Mart Provisions",
+    "category": "food",
+    "amount": 1420
+  }
+]
